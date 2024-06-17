@@ -18,6 +18,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -40,16 +41,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-
-
 type Task = {
   $id: string;
   taskName: string;
+  taskDesc: string; // Ensure taskDesc is added here
   status: string;
   priority: string;
 };
 
-const columns: ColumnDef<Task>[] = [
+const columns: (router: ReturnType<typeof useRouter>) => ColumnDef<Task>[] = (router) => [
   {
     id: "select",
     header: ({ table }) => (
@@ -118,7 +118,9 @@ const columns: ColumnDef<Task>[] = [
               Copy task ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View task details</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push(`/task/list/${task.$id}`)}>
+              View task details
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -135,9 +137,11 @@ const ListComponent = ({ data }: { data: Task[] }) => {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const router = useRouter(); // Initialize useRouter here
+
   const table = useReactTable({
     data,
-    columns,
+    columns: columns(router), // Pass the router to columns
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -303,7 +307,7 @@ const ListComponent = ({ data }: { data: Task[] }) => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell colSpan={columns(router).length} className="h-24 text-center">
                   No results.
                 </TableCell>
               </TableRow>
