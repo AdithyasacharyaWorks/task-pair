@@ -106,7 +106,7 @@ const TaskDetails = ({ params }: any) => {
                 <div className="flex items-center space-x-2 px-3 py-1 rounded-full bg-[#30363d] text-white text-sm">
                   <span>Status:</span>
                   <div className="ml-2 inline-block w-40 text-sm">
-                    <Select value={status} onValueChange={handleStatusChange}>
+                    <Select value={status} onValueChange={handleStatusChange} >
                       <SelectTrigger>
                         <SelectValue placeholder="Select status" />
                       </SelectTrigger>
@@ -136,7 +136,7 @@ const TaskDetails = ({ params }: any) => {
                 Update Status
               </Button>
             </div>
-            <div className="flex items-center w-fit space-x-2  text-green-700 mb-2  text-sm">
+            <div className="flex items-center w-fit space-x-2  text-blue-500 mb-2  text-sm">
                   <div>Created by:</div>
                   <div>{data?.email}</div>
             </div>
