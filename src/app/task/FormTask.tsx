@@ -11,6 +11,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Loader from "@/components/custom/Loader";
@@ -117,13 +118,16 @@ const FormTask = () => {
   };
 
   return (
-    <div className="min-h-screen py-2 flex items-center justify-center bg-gray-900 text-white">
-      <div className="bg-gray-800 p-8 rounded shadow-lg w-full max-w-4xl">
+    <div className=" py-2 flex  items-center mt-5 justify-center bg-[#0E1117] text-white">
+      <div className="bg-gray-800 p-8 rounded w-full max-w-4xl">
         {showAlert && alertMessage !== "" && (
           <AlerList type={isSuccess} message={alertMessage} />
         )}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormMessage className="text-green-600 text-lg underline">
+              Add task 
+            </FormMessage>
             <FormField
               control={form.control}
               name="username"

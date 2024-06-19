@@ -1,5 +1,4 @@
-"use client";
-
+// Import necessary components and hooks
 import * as React from "react";
 import {
   CaretSortIcon,
@@ -18,10 +17,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useRouter } from "next/navigation"; // Import useRouter
-
+import { useRouter } from "next/navigation"; // Corrected import
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -41,37 +38,20 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+// Define the Task type
 type Task = {
   $id: string;
   taskName: string;
-  taskDesc: string; // Ensure taskDesc is added here
+  taskDesc: string;
   status: string;
   priority: string;
+  isAccepted: boolean | null;
 };
 
-const columns: (router: ReturnType<typeof useRouter>) => ColumnDef<Task>[] = (router) => [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+// Define columns with necessary changes
+const columns: (router: ReturnType<typeof useRouter>) => ColumnDef<Task>[] = (
+  router
+) => [
   {
     accessorKey: "taskName",
     header: ({ column }) => (
@@ -97,6 +77,10 @@ const columns: (router: ReturnType<typeof useRouter>) => ColumnDef<Task>[] = (ro
     header: "Priority",
   },
   {
+    accessorKey: "isAccepted",
+    header: "Accepted",
+  },
+  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
@@ -118,7 +102,9 @@ const columns: (router: ReturnType<typeof useRouter>) => ColumnDef<Task>[] = (ro
               Copy task ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => router.push(`/task/list/${task.$id}`)}>
+            <DropdownMenuItem
+              onClick={() => router.push(`/task/list/${task.$id}`)}
+            >
               View task details
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -128,20 +114,22 @@ const columns: (router: ReturnType<typeof useRouter>) => ColumnDef<Task>[] = (ro
   },
 ];
 
+// Define the ListComponent functional component
 const ListComponent = ({ data }: { data: Task[] }) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>(
+    {}
+  );
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const router = useRouter(); // Initialize useRouter here
+  const router = useRouter(); // Initialize useRouter hook
 
   const table = useReactTable({
     data,
-    columns: columns(router), // Pass the router to columns
+    columns: columns(router), // Pass the router instance to columns function
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -178,53 +166,68 @@ const ListComponent = ({ data }: { data: Task[] }) => {
           <DropdownMenuContent align="end">
             <DropdownMenuCheckboxItem
               checked={
-                (table.getColumn("status")?.getFilterValue() as string) === "In Progress"
+                (table.getColumn("status")?.getFilterValue() as string) ===
+                "Todo"
               }
               onCheckedChange={(value) =>
-                table.getColumn("status")?.setFilterValue(value ? "In Progress" : "")
-              }
-            >
-              In Progress
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={
-                (table.getColumn("status")?.getFilterValue() as string) === "Backlog"
-              }
-              onCheckedChange={(value) =>
-                table.getColumn("status")?.setFilterValue(value ? "Backlog" : "")
-              }
-            >
-              Backlog
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={
-                (table.getColumn("status")?.getFilterValue() as string) === "Todo"
-              }
-              onCheckedChange={(value) =>
-                table.getColumn("status")?.setFilterValue(value ? "Todo" : "")
+                table.getColumn("status")?.setFilterValue(
+                  value ? "Todo" : ""
+                )
               }
             >
               Todo
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
               checked={
-                (table.getColumn("status")?.getFilterValue() as string) === "Done"
+                (table.getColumn("status")?.getFilterValue() as string) ===
+                "In Progress"
               }
               onCheckedChange={(value) =>
-                table.getColumn("status")?.setFilterValue(value ? "Done" : "")
+                table.getColumn("status")?.setFilterValue(
+                  value ? "In Progress" : ""
+                )
+              }
+            >
+              In Progress
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={
+                (table.getColumn("status")?.getFilterValue() as string) ===
+                "Done"
+              }
+              onCheckedChange={(value) =>
+                table.getColumn("status")?.setFilterValue(
+                  value ? "Done" : ""
+                )
               }
             >
               Done
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
               checked={
-                (table.getColumn("status")?.getFilterValue() as string) === "Canceled"
+                (table.getColumn("status")?.getFilterValue() as string) ===
+                "Backlog"
               }
               onCheckedChange={(value) =>
-                table.getColumn("status")?.setFilterValue(value ? "Canceled" : "")
+                table.getColumn("status")?.setFilterValue(
+                  value ? "Backlog" : ""
+                )
               }
             >
-              Canceled
+              Backlog
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={
+                (table.getColumn("status")?.getFilterValue() as string) ===
+                "Cancelled"
+              }
+              onCheckedChange={(value) =>
+                table.getColumn("status")?.setFilterValue(
+                  value ? "Cancelled" : ""
+                )
+              }
+            >
+              Cancelled
             </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -237,7 +240,8 @@ const ListComponent = ({ data }: { data: Task[] }) => {
           <DropdownMenuContent align="end">
             <DropdownMenuCheckboxItem
               checked={
-                (table.getColumn("priority")?.getFilterValue() as string) === "Low"
+                (table.getColumn("priority")?.getFilterValue() as string) ===
+                "Low"
               }
               onCheckedChange={(value) =>
                 table.getColumn("priority")?.setFilterValue(value ? "Low" : "")
@@ -247,20 +251,26 @@ const ListComponent = ({ data }: { data: Task[] }) => {
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
               checked={
-                (table.getColumn("priority")?.getFilterValue() as string) === "Medium"
+                (table.getColumn("priority")?.getFilterValue() as string) ===
+                "Medium"
               }
               onCheckedChange={(value) =>
-                table.getColumn("priority")?.setFilterValue(value ? "Medium" : "")
+                table.getColumn("priority")?.setFilterValue(
+                  value ? "Medium" : ""
+                )
               }
             >
               Medium
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
               checked={
-                (table.getColumn("priority")?.getFilterValue() as string) === "High"
+                (table.getColumn("priority")?.getFilterValue() as string) ===
+                "High"
               }
               onCheckedChange={(value) =>
-                table.getColumn("priority")?.setFilterValue(value ? "High" : "")
+                table.getColumn("priority")?.setFilterValue(
+                  value ? "High" : ""
+                )
               }
             >
               High
@@ -273,18 +283,16 @@ const ListComponent = ({ data }: { data: Task[] }) => {
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -293,7 +301,7 @@ const ListComponent = ({ data }: { data: Task[] }) => {
               table?.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  data-state={row.getIsSelected() ? "selected" : undefined}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -307,7 +315,10 @@ const ListComponent = ({ data }: { data: Task[] }) => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns(router).length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns(router).length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>
@@ -344,3 +355,4 @@ const ListComponent = ({ data }: { data: Task[] }) => {
 };
 
 export default ListComponent;
+

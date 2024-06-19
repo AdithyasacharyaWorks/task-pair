@@ -27,10 +27,10 @@ const Page = () => {
         $id: string;
         taskName: string;
         taskDesc: string;
-        assignedTo: string;
         status: string;
         priority: string;
-    }
+        isAccepted: boolean | null;
+    };
 
     return (
         <div className=''>
