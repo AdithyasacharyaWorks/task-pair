@@ -50,7 +50,7 @@ const Navbar = () => {
                         <Link href={ele.href} key={ele.href}>
                             <span
                                 className={cn(
-                                    "cursor-pointer text-sm font-light",
+                                    "cursor-pointer text-md font-light",
                                     pathName === ele.href ? "text-blue-500" : "text-white"
                                 )}
                             >

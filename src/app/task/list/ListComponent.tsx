@@ -1,4 +1,5 @@
-// Import necessary components and hooks
+"use client";
+
 import * as React from "react";
 import {
   CaretSortIcon,
@@ -46,6 +47,7 @@ type Task = {
   status: string;
   priority: string;
   isAccepted: boolean | null;
+  assignedTo: string;
 };
 
 // Define columns with necessary changes
@@ -65,8 +67,12 @@ const columns: (router: ReturnType<typeof useRouter>) => ColumnDef<Task>[] = (
     ),
   },
   {
-    accessorKey: "taskDesc",
-    header: "Description",
+    accessorKey: "assignedTo",
+    header: "Assigned",
+  },
+  {
+    accessorKey: "isAccepted",
+    header: "Accepted",
   },
   {
     accessorKey: "status",
@@ -75,10 +81,6 @@ const columns: (router: ReturnType<typeof useRouter>) => ColumnDef<Task>[] = (
   {
     accessorKey: "priority",
     header: "Priority",
-  },
-  {
-    accessorKey: "isAccepted",
-    header: "Accepted",
   },
   {
     id: "actions",
@@ -148,12 +150,20 @@ const ListComponent = ({ data }: { data: Task[] }) => {
 
   return (
     <div className="w-full p-4">
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 gap-2">
         <Input
           placeholder="Filter tasks..."
           value={(table.getColumn("taskName")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("taskName")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+        <Input
+          placeholder="Filter by assignee email..."
+          value={(table.getColumn("assignedTo")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("assignedTo")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -277,6 +287,30 @@ const ListComponent = ({ data }: { data: Task[] }) => {
             </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="default" className="ml-auto">
+              Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) =>
+                    column.toggleVisibility(!!value)
+                  }
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <div className="rounded-md border">
         <Table>
@@ -297,11 +331,11 @@ const ListComponent = ({ data }: { data: Task[] }) => {
             ))}
           </TableHeader>
           <TableBody>
-            {table?.getRowModel().rows?.length ? (
-              table?.getRowModel().rows.map((row) => (
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() ? "selected" : undefined}
+                  data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -327,32 +361,28 @@ const ListComponent = ({ data }: { data: Task[] }) => {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+         <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredRowModel().rows.length} row(s) in total.
         </div>
-        <div className="space-x-2">
-          <Button
-            variant="default"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="default"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
+        <Button
+          variant="default"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="default"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </Button>
       </div>
     </div>
   );
 };
 
 export default ListComponent;
-

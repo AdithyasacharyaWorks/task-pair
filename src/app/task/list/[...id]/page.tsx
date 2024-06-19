@@ -113,7 +113,7 @@ const TaskDetails = ({ params }: any) => {
           </div>
 
           <div className="bg-[#21262d] shadow-inner rounded-lg p-6 mb-6">
-            <div className="flex justify-between items-center mb-4">
+            <div className="sm:flex  justify-between items-center mb-4">
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2 pr-3 py-1 rounded-lg  text-white text-md">
                   <span>Status:</span>
@@ -148,15 +148,17 @@ const TaskDetails = ({ params }: any) => {
                   <span className="text-red-500">{data?.priority}</span>
                 </div>
               </div>
+              <div className="sm:pt-0 pt-2">
               <Button
                 variant="default"
                 size="sm"
                 onClick={handleUpdate}
                 disabled={!isStatusChanged}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
+                className="bg-blue-600 hover:bg-blue-700 text-white "
               >
                 Update Status
               </Button>
+              </div>
             </div>
 
             <div className="py-2 flex gap-2  items-center ">
