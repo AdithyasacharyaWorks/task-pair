@@ -122,9 +122,8 @@ const ListComponent = ({ data }: { data: Task[] }) => {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>(
-    {}
-  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
   const router = useRouter(); // Initialize useRouter hook
@@ -151,25 +150,32 @@ const ListComponent = ({ data }: { data: Task[] }) => {
   return (
     <div className="w-full p-4">
       <div className="flex items-center py-4 gap-2">
-        <Input
-          placeholder="Filter tasks..."
-          value={(table.getColumn("taskName")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("taskName")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-        <Input
-          placeholder="Filter by assignee email..."
-          value={(table.getColumn("assignedTo")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("assignedTo")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        <div className="sm:flex  sm:flex-row sm:gap-5  gap-5">
+          <Input
+            placeholder="Filter tasks..."
+            value={
+              (table.getColumn("taskName")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn("taskName")?.setFilterValue(event.target.value)
+            }
+            className="max-w-md hidden sm:block"
+          />
+          <Input
+            placeholder="Filter by assignee email..."
+            value={
+              (table.getColumn("assignedTo")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn("assignedTo")?.setFilterValue(event.target.value)
+            }
+            className="max-w-md hidden sm:block"
+          />
+        </div>
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="default" className="ml-2">
+            <Button variant="default" className="ml-2 hidden sm:flex">
               Status <ChevronDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -180,9 +186,7 @@ const ListComponent = ({ data }: { data: Task[] }) => {
                 "Todo"
               }
               onCheckedChange={(value) =>
-                table.getColumn("status")?.setFilterValue(
-                  value ? "Todo" : ""
-                )
+                table.getColumn("status")?.setFilterValue(value ? "Todo" : "")
               }
             >
               Todo
@@ -193,9 +197,9 @@ const ListComponent = ({ data }: { data: Task[] }) => {
                 "In Progress"
               }
               onCheckedChange={(value) =>
-                table.getColumn("status")?.setFilterValue(
-                  value ? "In Progress" : ""
-                )
+                table
+                  .getColumn("status")
+                  ?.setFilterValue(value ? "In Progress" : "")
               }
             >
               In Progress
@@ -206,9 +210,7 @@ const ListComponent = ({ data }: { data: Task[] }) => {
                 "Done"
               }
               onCheckedChange={(value) =>
-                table.getColumn("status")?.setFilterValue(
-                  value ? "Done" : ""
-                )
+                table.getColumn("status")?.setFilterValue(value ? "Done" : "")
               }
             >
               Done
@@ -219,9 +221,9 @@ const ListComponent = ({ data }: { data: Task[] }) => {
                 "Backlog"
               }
               onCheckedChange={(value) =>
-                table.getColumn("status")?.setFilterValue(
-                  value ? "Backlog" : ""
-                )
+                table
+                  .getColumn("status")
+                  ?.setFilterValue(value ? "Backlog" : "")
               }
             >
               Backlog
@@ -232,9 +234,9 @@ const ListComponent = ({ data }: { data: Task[] }) => {
                 "Cancelled"
               }
               onCheckedChange={(value) =>
-                table.getColumn("status")?.setFilterValue(
-                  value ? "Cancelled" : ""
-                )
+                table
+                  .getColumn("status")
+                  ?.setFilterValue(value ? "Cancelled" : "")
               }
             >
               Cancelled
@@ -243,7 +245,7 @@ const ListComponent = ({ data }: { data: Task[] }) => {
         </DropdownMenu>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="default" className="ml-2">
+            <Button variant="default" className="ml-2 hidden sm:flex">
               Priority <ChevronDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -265,9 +267,9 @@ const ListComponent = ({ data }: { data: Task[] }) => {
                 "Medium"
               }
               onCheckedChange={(value) =>
-                table.getColumn("priority")?.setFilterValue(
-                  value ? "Medium" : ""
-                )
+                table
+                  .getColumn("priority")
+                  ?.setFilterValue(value ? "Medium" : "")
               }
             >
               Medium
@@ -278,9 +280,7 @@ const ListComponent = ({ data }: { data: Task[] }) => {
                 "High"
               }
               onCheckedChange={(value) =>
-                table.getColumn("priority")?.setFilterValue(
-                  value ? "High" : ""
-                )
+                table.getColumn("priority")?.setFilterValue(value ? "High" : "")
               }
             >
               High
@@ -289,7 +289,30 @@ const ListComponent = ({ data }: { data: Task[] }) => {
         </DropdownMenu>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="default" className="ml-auto">
+            <Button variant="default" className="ml-2 hidden sm:flex">
+              Assigned to me
+              <ChevronDownIcon className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuCheckboxItem
+              checked={
+                (table.getColumn("assignedTo")?.getFilterValue() as string) ===
+                "adithyasacharya292@gmail.com"
+              }
+              onCheckedChange={(value) =>
+                table
+                  .getColumn("assignedTo")
+                  ?.setFilterValue(value ? "adithyasacharya292@gmail.com" : "")
+              }
+            >
+              Show
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="default" className="ml-auto hidden sm:flex">
               Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -302,9 +325,7 @@ const ListComponent = ({ data }: { data: Task[] }) => {
                   key={column.id}
                   className="capitalize"
                   checked={column.getIsVisible()}
-                  onCheckedChange={(value) =>
-                    column.toggleVisibility(!!value)
-                  }
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
                 >
                   {column.id}
                 </DropdownMenuCheckboxItem>
@@ -361,7 +382,7 @@ const ListComponent = ({ data }: { data: Task[] }) => {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-         <div className="flex-1 text-sm text-muted-foreground">
+        <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredRowModel().rows.length} row(s) in total.
         </div>
         <Button
