@@ -11,7 +11,6 @@ export async function POST(request: Request) {
   
   try {
     const body = await request.json();
-    console.log("Request body:", body);
 
     // Retrieve email from cookies
     // const email = cookies().get('email')?.value;
@@ -24,8 +23,9 @@ export async function POST(request: Request) {
       taskName: body.username,
       taskDesc: body.description,
       assignedTo: body.assignTo,
-      userId: "666c6b21003d48813de0",
-      email: email
+      email: email,
+      priority:body.priority||"low",
+      deadline:body.deadline||"none",
     });
 
     return NextResponse.json({
