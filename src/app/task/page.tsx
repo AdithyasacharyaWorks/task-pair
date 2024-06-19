@@ -1,4 +1,4 @@
-import FormTask from './FormTask'
+import FormTask from "./FormTask"
 
 const page = () => {
   return (

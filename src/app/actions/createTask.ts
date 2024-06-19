@@ -6,13 +6,9 @@ type Values = {
     assignTo: string;
 };
 
-type Email =  {
-    userEmail: string,
-    userId:string,
-    userName: string
-  }
+type Email = string
 
 
 export default async function createTask(values: Values,email:Email) {
-    return await axios.post(`http://localhost:3000/api/createtask?email=${email.userEmail}`,values)
+    return await axios.post(`http://localhost:3000/api/createtask?email=${email}`,values)
 }

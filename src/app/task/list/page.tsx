@@ -7,14 +7,20 @@ import Cookies from "js-cookie";
 import Loader from "../../../components/custom/Loader";
 
 const Page = () => {
-    const [data, setData] = useState<Task[]>([]); // Initialize with an empty array
-    const cookieState = Cookies.get('appContextState');
-    const email = cookieState ? JSON.parse(cookieState) :""
+    const [data, setData] = useState<Task[]>([]); // Initialize with an empty array;
+    const [error,setError] =useState(false)
 
     useEffect(() => {
-        task(email.userEmail).then((res) => res.json())
-             .then((res) => setData(res.data.documents));
+
+        setError(false);
+        task().then((res) => res.json())
+             .then((res) => setData(res.data.documents)).catch((res)=>{
+                console.log("here inside this errosr")
+                setError(true);
+             })
     }, []);
+
+    console.log(data)
 
 
     type Task = {
@@ -28,9 +34,9 @@ const Page = () => {
 
     return (
         <div className=''>
-            {!data?<div className='flex justify-center'>No data</div>:data.length > 0 ? (
+            {error?"Error fetching the data": !data?<div className='flex justify-center'>No data</div>:data.length > 0 ? (
                 <div className="relative">
-                    <div className='z-10'><ListComponent data={data} /></div>
+                   {!error &&  <div className='z-10'><ListComponent data={data}/></div>}
                 </div>
             ) :<div className='flex justify-center mt-32'> <Loader /></div>}
         </div>

@@ -1,7 +1,18 @@
 import { database,dbId,collectionId,Query } from "@/backend";
 import { NextResponse,NextRequest } from "next/server";
+import { getSession } from "next-auth/react";
+
+const getusers=async ()=>{
+    console.log("here inside function ")
+    const session = await getSession()
+    return session
+}
 export async function GET(req: NextRequest) {
     try {
+
+        const session = await getusers()
+
+        console.log(session)
     
 
         const url = new URL(req.url);
@@ -9,9 +20,11 @@ export async function GET(req: NextRequest) {
         const taskId = url.searchParams.get('taskId')|| ""
     
 
+
+        console.log("calling the detail with task id ")
         const res = await database.listDocuments(dbId, collectionId, [
             Query.limit(50),
-            Query.equal('email', email),
+            Query.equal('email', "adithyasacharya292@gmail.com"),
             Query.equal('$id',taskId)
         ]);
 

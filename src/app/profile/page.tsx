@@ -1,4 +1,4 @@
-'use client';
+
 
 import {
     Avatar,
@@ -19,13 +19,11 @@ import {
 import {
     Separator,
 } from "@/components/ui/separator";
-
-import { useAppContext } from "@/lib/userContextProvder";
+import { getUserSession } from "@/lib/session";
 import { cn } from '@/lib/utils';
-import { useState } from "react";
-import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
-import axios from "axios";
+import { redirect } from "next/navigation";
+
+
 
 interface AppContextState {
   userEmail: string;
@@ -33,52 +31,32 @@ interface AppContextState {
   userName: string;
 }
 
-// Define the shape of the context, including the state and setState function
 interface AppContextType {
   state: AppContextState;
   setState: React.Dispatch<React.SetStateAction<AppContextState>>;
 }
 
-const ProfilePage = () => {
-  // react-hooks/rules-of-hooks
-  const [state, setState] = useState<AppContextState>(() => {
-    const cookieState = Cookies.get('appContextState');
-    return cookieState ? JSON.parse(cookieState) : ""
-});
-    const router = useRouter();
-    const { clearState } = useAppContext();
+const ProfilePage = async() => {
 
-
+    const user = await getUserSession();
     const handleLogout = async () => {
-        try {
-        //   await axios.post("/api/logout");
-    
-          // Remove cookies
-          Cookies.remove('email');
-          Cookies.remove('token');
-          Cookies.remove('appContextState');
-    
-          // Clear state
-          setState({ userEmail: '', userId: '', userName: '' });
-          clearState();
-          router.push('/login');
-        } catch (error) {
-          console.error("Logout failed:", error);
-        }
+        'use server'
+        redirect('/api/auth/signout')
       };
 
 
     return (
+        <form action={handleLogout}>
         <Card className="max-w-md mx-auto mt-10 font-light">
             <CardHeader>
                 <div className="flex items-center space-x-4">
                     <Avatar>
-                        <AvatarImage src="" alt="User Name" />
+                        <AvatarImage src={user?.image||""} alt="User Name" />
                         <AvatarFallback></AvatarFallback>
                     </Avatar>
                     <div className={cn("cursor-pointer text-sm font-light")}>
-                        <CardTitle>{state.userEmail!=='' && state.userEmail}</CardTitle>
-                        <CardDescription>{"hello"}</CardDescription>
+                        <CardTitle>{user?.name}</CardTitle>
+                        <CardDescription>{user?.email}</CardDescription>
                     </div>
                 </div>
             </CardHeader>
@@ -87,7 +65,7 @@ const ProfilePage = () => {
                 <div className="space-y-2">
                     <div className="flex justify-between">
                         <span className="text-sm font-medium text-gray-600">Email:</span>
-                        <span className="text-sm">{state.userEmail!=='' && state.userEmail}</span>
+                        <span className="text-sm">{user?.email}</span>
                     </div>
                     <div className="flex justify-between">
                         <span className="text-sm font-medium text-gray-600">Location:</span>
@@ -101,9 +79,10 @@ const ProfilePage = () => {
             </CardContent>
             <Separator />
             <CardFooter className="flex justify-end space-x-2 mt-2">
-                <Button variant="default" onClick={handleLogout}>Logout</Button>
+                <Button variant="default" >Logout</Button>
             </CardFooter>
         </Card>
+        </form>
     );
 }
 

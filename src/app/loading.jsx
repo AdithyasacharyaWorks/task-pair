@@ -1,8 +1,11 @@
 import React from 'react'
 
+import Loader from "../components/custom/Loader"
 const loading = () => {
   return (
-    <div>loading...</div>
+    <div className='flex justify-center items-center mt-32'>
+      <Loader />
+    </div>
   )
 }
 

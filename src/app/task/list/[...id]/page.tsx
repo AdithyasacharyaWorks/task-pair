@@ -22,17 +22,19 @@ type userData = {
 
 const TaskDetails = ({ params }:any) => {
   const [data,setData] = useState<userData>({taskName:"",taskDesc:"",status:"",userId:"",priority:"",email:"",assignedTo:"",$id:""})
+  const [loading,setLoading] = useState(false)
   const router = useRouter();
   useEffect(()=>{
+    setLoading(true)
     axios.get(`http://localhost:3000/api/taskdetail?email=adithyasacharya929@gmail.com&taskId=${params.id}`)
     .then((res)=>{
-      console.log(res.data.data.documents[0])
       setData(res.data.data.documents[0])
+      setLoading(false)
     }).catch((err)=>{
-      console.log(err)
+      setLoading(false);
     })
   },[])
-  console.log(params)
+
   const initialStatus = "In Progress";
 
   const [status, setStatus] = React.useState(initialStatus);
@@ -40,14 +42,6 @@ const TaskDetails = ({ params }:any) => {
   const [newComment, setNewComment] = React.useState("");
   const [isStatusChanged, setIsStatusChanged] = React.useState(false);
 
-  // Hardcoded task data for demonstration
-  const task = {
-    id: "12345" || params?.id,
-    taskName: "Sample Task",
-    taskDesc: "This is a sample task description.",
-    status: status,
-    priority: "High",
-  };
 
   const handleStatusChange = (value:any) => {
     setStatus(value);
@@ -55,28 +49,26 @@ const TaskDetails = ({ params }:any) => {
   };
 
   const handleAddComment = () => {
-    const username = "User123"; // Hardcoded username for demonstration
+    const username = "User123";
     const timestamp = new Date().toLocaleString();
     const comment = {
       text: newComment,
       username,
       timestamp,
     };
-    // setComments((prevComments) => [...prevComments, comment]);
     setNewComment("");
   };
 
   const handleUpdate = () => {
-    // Logic to update the status (e.g., API call)
-    // After updating, reset the initial status
     setStatus(status);
     setIsStatusChanged(false);
   };
 
+
   return (
     <div>
       
-    {Object.keys(data).length === 0?<Loader/>:<div className="max-w-full mx-auto p-6 bg-gray-900 text-white">
+    {loading ? <div className="flex justify-center items-center mt-32"><Loader /></div>:Object.keys(data).length === 0?<Loader/>:<div className="max-w-full mx-auto p-6 bg-gray-900 text-white">
       <div className="flex flex-row justify-between">
       <h1 className="text-3xl font-bold mb-6 text-gray-100">Task Details</h1>
       <div className="mb-6 flex">

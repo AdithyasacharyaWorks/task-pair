@@ -2,7 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./Navbar";
 import { AppWrapper } from "@/lib/userContextProvder";
-
+import { getUserSession } from "@/lib/session";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -10,17 +10,21 @@ export const metadata = {
   description: "Project Management Dashboard",
 };
 
-export default function RootLayout({
+
+export default async  function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const user = await getUserSession()
+  console.log(user)
+
   return (
     <html lang="en">
       <body className={`${inter.className} `}>
         <main className="">
           <AppWrapper>
-            <Navbar />
+            {user!== undefined && <Navbar />}
             {children}
           </AppWrapper>
         </main>
