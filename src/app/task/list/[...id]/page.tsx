@@ -92,7 +92,7 @@ const TaskDetails = ({ params }: any) => {
   };
 
   return (
-    <div className=" flex items-center justify-center bg-[#0d1117]">
+    <div className=" flex items-center justify-center bg-[#0d1117] mt-32">
       {loading ? (
         <div className="flex justify-center items-center mt-32">
           <Loader />

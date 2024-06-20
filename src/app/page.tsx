@@ -37,8 +37,8 @@ export default async function Home() {
           </form>
         </div>
       ) : (
-        <div className="px-5">
-          <div className="rounded-lg   flex flex-col  ">
+        <div className="">
+          {/* <div className="rounded-lg   flex flex-col  ">
             <div className="mb-4">
               <img
                 src={user?.image || ""}
@@ -52,8 +52,9 @@ export default async function Home() {
             </div>
           </div>
           <div >
-            <Dashboard />
-          </div>
+           
+          </div> */}
+          <Dashboard user={user} className="bg-black"/>
         </div>
       )}
     </main>

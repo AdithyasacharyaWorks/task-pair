@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -18,7 +18,16 @@ import Loader from "@/components/custom/Loader";
 import createTask from "../actions/createTask";
 import { AlerList } from "./AlerList";
 import Cookies from "js-cookie";
-import session from "../actions/session"; // Assuming you have a session function
+import session from "../actions/session";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -27,9 +36,12 @@ const formSchema = z.object({
   description: z.string().min(2, {
     message: "Description is required.",
   }),
-  assignTo: z.string().email({
-    message: "Please enter a valid email address for Assign to field.",
-  }).optional(), // Making assignTo optional since it's dynamically set
+  assignTo: z
+    .string()
+    .email({
+      message: "Please enter a valid email address for Assign to field.",
+    })
+    .optional(), // Making assignTo optional since it's dynamically set
   priority: z.string(),
   deadline: z.string().refine((value) => !!value, {
     message: "Deadline is required.",
@@ -119,14 +131,14 @@ const FormTask = () => {
 
   return (
     <div className=" py-2 flex  items-center mt-5 justify-center bg-[#0E1117] text-white">
-      <div className="bg-gray-800 p-8 rounded w-full max-w-4xl">
+      <div className="bg-[#0E1117] p-8 rounded w-full max-w-4xl border border-gray-600 shadow-lg hover:shadow-xl transition-shadow duration-300">
         {showAlert && alertMessage !== "" && (
           <AlerList type={isSuccess} message={alertMessage} />
         )}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormMessage className="text-green-600 text-lg underline">
-              Add task 
+              Add task
             </FormMessage>
             <FormField
               control={form.control}
@@ -169,15 +181,18 @@ const FormTask = () => {
                     <FormItem>
                       <FormLabel>Priority</FormLabel>
                       <FormControl>
-                        <select
-                          {...field}
-                          className="w-full text-white px-3 text-sm rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 bg-gray-800 p-2 border border-white"
-                        >
-                          <option value="">Select Priority</option>
-                          <option value="low">Low</option>
-                          <option value="medium">Medium</option>
-                          <option value="high">High</option>
-                        </select>
+                        <Select onValueChange={field.onChange}>
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select Priority" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value="Low">Low</SelectItem>
+                              <SelectItem value="Medium">Medium</SelectItem>
+                              <SelectItem value="High">High</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                     </FormItem>
                   )}

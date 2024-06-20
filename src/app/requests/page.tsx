@@ -3,6 +3,50 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'; 
 import { Button } from '@/components/ui/button';
+import CardHoverEffect from './CardHoverEffect';
+
+
+
+const projects = [
+  {
+    title: "Task 1adithya added now",
+    description:
+      "Note: adithya added now is not yet accpted your task request yet.",
+      link: "/requests/5",
+    
+  },
+  {
+    title: "Netflix",
+    description:
+      "A streaming service that offers a wide variety of award-winning TV shows, movies, anime, documentaries, and more on thousands of internet-connected devices.",
+    link: "/",
+  },
+  {
+    title: "Google",
+    description:
+      "A multinational technology company that specializes in Internet-related services and products.",
+    link: "/",
+  },
+  {
+    title: "Meta",
+    description:
+      "A technology company that focuses on building products that advance Facebook's mission of bringing the world closer together.",
+      link: "/",
+  },
+  {
+    title: "Amazon",
+    description:
+      "A multinational technology company focusing on e-commerce, cloud computing, digital streaming, and artificial intelligence.",
+      link: "/",
+  },
+  {
+    title: "Microsoft",
+    description:
+      "A multinational technology company that develops, manufactures, licenses, supports, and sells computer software, consumer electronics, personal computers, and related services.",
+      link: "/",
+  },
+];
+
 
 const RequestsPage = () => {
   const router = useRouter();
@@ -43,8 +87,8 @@ const RequestsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      <div className="container mx-auto py-8 px-4">
+    <div className="min-h-screen bg-[#0E1117] mt-32 text-white">
+      {/* <div className="container mx-auto py-8 px-4">
         <div className="flex justify-between items-center mb-8">
           <Link href="/">
             <span className="text-blue-400 hover:text-blue-500">&larr; Back to Home</span>
@@ -57,7 +101,7 @@ const RequestsPage = () => {
             assignedTasks.map((task:any) => (
               <div
                 key={task.id}
-                className="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition duration-300 transform hover:scale-105"
+                className="bg-[#0E1117] border rounded-lg shadow-lg overflow-hidden transition duration-300 transform hover:scale-105"
               >
                 <div className="p-6">
                   <h3 className="text-xl font-semibold mb-2 text-gray-100">{task.title}</h3>
@@ -87,7 +131,8 @@ const RequestsPage = () => {
             ))
           )}
         </div>
-      </div>
+      </div> */}
+      <CardHoverEffect projects={projects}/>
     </div>
   );
 };

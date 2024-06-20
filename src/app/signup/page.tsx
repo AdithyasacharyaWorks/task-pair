@@ -67,8 +67,8 @@ const SignUpPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center ">
-      <div className="max-w-md w-full bg-[#30363d] p-8 rounded-md shadow-lg">
+    <div className="min-h-screen flex items-center justify-center  ">
+      <div className="max-w-md w-full bg-[#0E1117] p-8 rounded-md shadow-lg">
         <h1 className="text-2xl font-bold mb-6 text-center">Sign Up</h1>
         {showAlert && alertMessage !== '' && <CustomAlert type={isSuccess} message={alertMessage} />}
         <Form {...form}>

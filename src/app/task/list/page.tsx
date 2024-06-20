@@ -30,6 +30,7 @@ const Page = () => {
         status: string;
         priority: string;
         isAccepted: boolean | null;
+        assignedTo: string;
     };
 
     return (
