@@ -72,8 +72,6 @@ export async function GET(req: NextRequest) {
             Query.limit(50),
             Query.or( [Query.equal('assignedTo',email),Query.equal('email',email)])
 
-
-            // Query.or([Query.equal("email", email), Query.equal("assignedTo", email)])
         ]);
 
         console.log(res)

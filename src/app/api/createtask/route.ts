@@ -11,9 +11,6 @@ export async function POST(request: Request) {
   
   try {
     const body = await request.json();
-
-    // Retrieve email from cookies
-    // const email = cookies().get('email')?.value;
     const url = new URL(request.url);
     const email = url.searchParams.get('email');
 
@@ -26,6 +23,7 @@ export async function POST(request: Request) {
       email: email,
       priority:body.priority||"low",
       deadline:body.deadline||"none",
+      isAccepted:body.email === body.assignedTo ?"Accept":"Pending"
     });
 
     return NextResponse.json({
