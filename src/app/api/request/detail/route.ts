@@ -14,10 +14,20 @@ export async function GET(req: NextRequest) {
             // Query.notEqual('email',email)
         ]);
 
+        console.log(res.documents[0].isAccepted)
+        let finalRes:any = ''
+        if(res.documents[0].isAccepted === "Accept"){
+             finalRes= "Accepted"
+        }else if(res.documents[0].isAccepted === "Decline"){
+            finalRes= "Declined"
+        }else{
+            finalRes =res
+        }
+
 
         return NextResponse.json({
             success: true,
-            data: res
+            data: finalRes
         });
 
     } catch (error: any) {

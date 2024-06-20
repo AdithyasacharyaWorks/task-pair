@@ -14,8 +14,6 @@ export async function POST(request: Request) {
     const url = new URL(request.url);
     const email = url.searchParams.get('email');
 
-
-
     const data = await database.createDocument(dbId, collectionId, id, {
       taskName: body.username,
       taskDesc: body.description,
@@ -23,7 +21,7 @@ export async function POST(request: Request) {
       email: email,
       priority:body.priority||"low",
       deadline:body.deadline||"none",
-      isAccepted:body.email === body.assignedTo ?"Accept":"Pending"
+      isAccepted:email === body.assignTo ?"Accept":"Pending"
     });
 
     return NextResponse.json({

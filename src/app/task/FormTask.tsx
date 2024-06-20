@@ -28,6 +28,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { database, dbId, userCollectionId, Query, collectionId } from "@/backend";
+import checkEmail from "../actions/checkEmail";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -55,6 +57,8 @@ const FormTask = () => {
   const [showAlert, setStopShowingAlert] = useState(false);
   const [assignToSelf, setAssignToSelf] = useState(false); // Toggle state
   const [email, setEmail] = useState<string | null>(null);
+  const [assignToError, setAssignToError] = useState<string | null>(null);
+  const [disableBtn,setDisableBtn] = useState<boolean>(true)
 
   // Define the types
   type User = {
@@ -78,6 +82,8 @@ const FormTask = () => {
     });
   }, []);
 
+  console.log(userCollectionId)
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -94,6 +100,19 @@ const FormTask = () => {
     if (assignToSelf) {
       values.assignTo = email || ""; // Assign logged-in user's email if "Assign to me" is checked
     }
+
+    // Check if there is an assignTo error
+    if (assignToError) {
+      setLoading(false);
+      setAlertMessage(assignToError);
+      setIsSuccess("error");
+      setStopShowingAlert(true);
+      setTimeout(() => {
+        setStopShowingAlert(false);
+      }, 3000);
+      return;
+    }
+
     try {
       const assignTo = values.assignTo || ""; // Ensure assignTo is a string
       const result = await createTask({ ...values, assignTo }, email || "");
@@ -123,14 +142,43 @@ const FormTask = () => {
     const newAssignToSelf = !assignToSelf;
     setAssignToSelf(newAssignToSelf);
     if (newAssignToSelf) {
-      form.setValue("assignTo", email || ""); // Assign logged-in user's email if toggled on
+      form.setValue("assignTo", email || ""); 
+      setDisableBtn(false)
+      setAssignToError(null);
     } else {
-      form.setValue("assignTo", ""); // Clear assignTo field if toggled off
+      form.setValue("assignTo", ""); 
+      setDisableBtn(true)
+    }
+  };
+  const handleEmailAssigned = async (e: any) => {
+    const inputEmail = e.target.value;
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    
+
+    if (!emailPattern.test(inputEmail)) {
+      setAssignToError("Invalid email format. Please enter a valid @gmail.com email address.");
+      return;
+    }
+
+    try {
+      const result = await checkEmail(inputEmail)
+
+      if (result.data.data.documents.length === 0) {
+        setAssignToError("This email is not registered in the Task app.");
+        setDisableBtn(true)
+      } else {
+        setDisableBtn(false)
+        setAssignToError(null); // Clear the error message if email is found
+      }
+    } catch (error) {
+      setDisableBtn(true)
+      console.error("Error checking email:", error);
+      setAssignToError("Error checking email. Please try again.");
     }
   };
 
   return (
-    <div className=" py-2 flex  items-center mt-5 justify-center bg-[#0E1117] text-white">
+    <div className="py-2 flex items-center mt-5 justify-center bg-[#0E1117] text-white">
       <div className="bg-[#0E1117] p-8 rounded w-full max-w-4xl border border-gray-600 shadow-lg hover:shadow-xl transition-shadow duration-300">
         {showAlert && alertMessage !== "" && (
           <AlerList type={isSuccess} message={alertMessage} />
@@ -239,15 +287,21 @@ const FormTask = () => {
                       {...field}
                       disabled={assignToSelf}
                       className="w-full"
+                      onBlur={handleEmailAssigned}
                     />
                   </FormControl>
+                  {assignToError && (
+                    <FormMessage className="text-red-600">
+                      {assignToError}
+                    </FormMessage>
+                  )}
                 </FormItem>
               )}
             />
             {loading ? (
               <Loader />
             ) : (
-              <Button variant="default" size="sm" type="submit">
+              <Button variant="default" size="sm" type="submit" disabled={disableBtn}>
                 Submit
               </Button>
             )}

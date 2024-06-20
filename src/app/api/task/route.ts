@@ -69,14 +69,13 @@ export async function GET(req: NextRequest) {
         console.log("get request for list")
 
         const res = await database.listDocuments(dbId, collectionId, [
-            Query.limit(50),
-            Query.or( [Query.equal('assignedTo',email),Query.equal('email',email)])
+            Query.orderDesc("$updatedAt"),
+            Query.limit(100),
+            Query.or( [Query.equal('assignedTo',email),Query.equal('email',email)]),
+            Query.equal('isAccepted','Accept'),
 
         ]);
 
-        console.log(res)
-
-        console.log(email)
 
         return NextResponse.json({
             success: true,

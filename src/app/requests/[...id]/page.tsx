@@ -11,12 +11,23 @@ const TaskDetail = ({ params }: any) => {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null); // State to handle success messages
   const router = useRouter();
+  const [isAcceptedOrDeclined,setIsAcceptedOrDeclined] = useState<string>("")
 
   useEffect(() => {
     const fetchTaskDetails = async () => {
       try {
         const response = await axios.get(`http://localhost:3000/api/request/detail?id=${params?.id}`);
-        setTask(response.data.data.documents[0]);
+        const responseData = response.data;
+        if (responseData.data === "Accepted") {
+          setIsAcceptedOrDeclined("Accepted");
+          return;
+        } else if (responseData.data === "Declined") {
+          setIsAcceptedOrDeclined("Declined");
+          return;
+        } else {
+          setTask(responseData.data.documents[0]);
+          return;
+        }
       } catch (error) {
         setError('Error fetching task details.');
         console.error('Error fetching task details:', error);
@@ -64,15 +75,26 @@ const TaskDetail = ({ params }: any) => {
     );
   }
 
+  if(isAcceptedOrDeclined!==""){
+    return(
+      <div className="min-h-screen bg-[#0E1117] mt-10 text-white flex items-center justify-center">
+        <div className="text-center">
+          {isAcceptedOrDeclined === "Accepted" && <p className="text-green-700 "> The task id <span className='underline text-green-100'>{params.id}</span>  is already {isAcceptedOrDeclined}!</p>}
+          {isAcceptedOrDeclined === "Declined" && <p className="text-red-700 "> The task id <span className='underline text-red-100'>{params.id}</span>  is already {isAcceptedOrDeclined}!</p>}
+        </div>
+      </div>
+    )
+  }
   if (!task) {
     return (
-      <div className="min-h-screen bg-[#0E1117] mt-20 text-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#0E1117] mt-10 text-white flex items-center justify-center">
         <div className="text-center">
           <p>Task not found.</p>
         </div>
       </div>
     );
   }
+
 
   return (
     <div className="min-h-screen bg-[#0E1117] text-bg-[#0E1117] py-8 px-4 flex flex-col items-center justify-center">
