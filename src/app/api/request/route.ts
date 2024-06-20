@@ -1,32 +1,20 @@
-import { database,dbId,collectionId,Query } from "@/backend";
-import { NextResponse,NextRequest } from "next/server";
-import { getSession } from "next-auth/react";
-
-const getusers=async ()=>{
-    console.log("here inside function ")
-    const session = await getSession()
-    return session
-}
+import { dbId,collectionId,database,Query } from "@/backend";
+import { NextRequest,NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
     try {
-
-        const session = await getusers()
-
-        console.log(session)
     
 
         const url = new URL(req.url);
         const email = url.searchParams.get('email') || ""
-        const taskId = url.searchParams.get('taskId')|| ""
     
 
-
-        console.log("calling the detail with task id ")
         const res = await database.listDocuments(dbId, collectionId, [
             Query.limit(50),
-            // Query.equal('email', "adithyasacharya929@gmail.com"),
-            Query.equal('$id',taskId)
+            Query.equal('assignedTo', email),
+            Query.equal('isAccepted','Pending'),
+            // Query.notEqual('email',email)
         ]);
+
 
         return NextResponse.json({
             success: true,

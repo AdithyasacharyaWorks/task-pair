@@ -117,5 +117,6 @@ export const config = {
         '/task/list',
         '/profile',
         '/home',
+        '/requests'
     ],
 };

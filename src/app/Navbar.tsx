@@ -79,6 +79,7 @@ const Navbar = () => {
         <MenuItem setActive={setActive} active={active} item="Task">
           <div className="flex flex-col space-y-4 text-sm">
             <HoveredLink href="/task">Add Task</HoveredLink>
+            <HoveredLink href="/requests">Task Requests</HoveredLink>
             <HoveredLink href="/task/list">List Task</HoveredLink>
           </div>
         </MenuItem>

@@ -66,12 +66,19 @@ export async function GET(req: NextRequest) {
 
         const url = new URL(req.url);
         const email = url.searchParams.get('email') || ""
-    
+        console.log("get request for list")
 
         const res = await database.listDocuments(dbId, collectionId, [
             Query.limit(50),
-            Query.equal('email', email)
+            Query.or( [Query.equal('assignedTo',email),Query.equal('email',email)])
+
+
+            // Query.or([Query.equal("email", email), Query.equal("assignedTo", email)])
         ]);
+
+        console.log(res)
+
+        console.log(email)
 
         return NextResponse.json({
             success: true,

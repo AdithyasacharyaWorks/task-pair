@@ -210,7 +210,7 @@ const FormTask = () => {
                           type="date"
                           placeholder="Deadline"
                           {...field}
-                          className="w-full"
+                          className="w-full bg-white text-black"
                         />
                       </FormControl>
                     </FormItem>

@@ -54,6 +54,7 @@ const TaskDetails = ({ params }: any) => {
         `http://localhost:3000/api/taskdetail?email=adithyasacharya929@gmail.com&taskId=${params.id}`
       )
       .then((res) => {
+        console.log(res)
         setData(res.data.data.documents[0]);
         setLoading(false);
       })
@@ -61,6 +62,8 @@ const TaskDetails = ({ params }: any) => {
         setLoading(false);
       });
   }, [params.id]);
+
+  console.log(data)
 
   const initialStatus = "In Progress";
 
@@ -97,7 +100,7 @@ const TaskDetails = ({ params }: any) => {
         <div className="flex justify-center items-center mt-32">
           <Loader />
         </div>
-      ) : Object.keys(data).length === 0 ? (
+      ) : data === undefined?"There is no data":Object.keys(data).length === 0 ? (
         <Loader />
       ) : (
         <div className="max-w-4xl w-full mx-auto p-6 bg-[#161b22] text-white shadow-lg rounded-lg mt-8 overflow-hidden">
@@ -117,7 +120,7 @@ const TaskDetails = ({ params }: any) => {
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2 pr-3 py-1 rounded-lg  text-white text-md">
                   <span>Status:</span>
-                  {data.isAccepted === "Accepted" ? (
+                  {data.isAccepted === "Accept" ? (
                     <div className="ml-2 inline-block w-40 text-sm">
                       <Select value={status}  onValueChange={handleStatusChange} >
                         <SelectTrigger>
@@ -196,7 +199,7 @@ const TaskDetails = ({ params }: any) => {
             </div>
           </div>
 
-         {data.isAccepted ==="Accepted" && <div className="bg-[#21262d] shadow-inner rounded-lg p-6 overflow-x-auto">
+         {data.isAccepted ==="Accept" && <div className="bg-[#21262d] shadow-inner rounded-lg p-6 overflow-x-auto">
             <h2 className="text-xl font-semibold mb-4 text-white">Comments</h2>
             <div className="mb-4 space-y-4">
               {comments.map((comment, index) => (
