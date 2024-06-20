@@ -30,6 +30,12 @@ import {
 } from "@/components/ui/select";
 import { database, dbId, userCollectionId, Query, collectionId } from "@/backend";
 import checkEmail from "../actions/checkEmail";
+import { AiOutlineCheckCircle } from "react-icons/ai";
+import { AiOutlineClose } from "react-icons/ai";
+
+
+
+
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -59,6 +65,7 @@ const FormTask = () => {
   const [email, setEmail] = useState<string | null>(null);
   const [assignToError, setAssignToError] = useState<string | null>(null);
   const [disableBtn,setDisableBtn] = useState<boolean>(true)
+  const [loadingEmailCheck,setLoadingEmailCheck] = useState<boolean>(false)
 
   // Define the types
   type User = {
@@ -77,12 +84,10 @@ const FormTask = () => {
       if (res !== null && res.user.email !== null) {
         setEmail(res.user.email);
       } else {
-        console.log("Session is null or email is null");
       }
     });
   }, []);
 
-  console.log(userCollectionId)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -96,24 +101,27 @@ const FormTask = () => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+
+    console.log("inside submit")
     setLoading(true);
     if (assignToSelf) {
       values.assignTo = email || ""; // Assign logged-in user's email if "Assign to me" is checked
     }
 
     // Check if there is an assignTo error
-    if (assignToError) {
-      setLoading(false);
-      setAlertMessage(assignToError);
-      setIsSuccess("error");
-      setStopShowingAlert(true);
-      setTimeout(() => {
-        setStopShowingAlert(false);
-      }, 3000);
-      return;
-    }
+    // if (assignToError) {
+    //   setLoading(false);
+    //   setAlertMessage(assignToError);
+    //   setIsSuccess("error");
+    //   setStopShowingAlert(true);
+    //   setTimeout(() => {
+    //     setStopShowingAlert(false);
+    //   }, 3000);
+    //   return;
+    // }
 
     try {
+      console.log("here")
       const assignTo = values.assignTo || ""; // Ensure assignTo is a string
       const result = await createTask({ ...values, assignTo }, email || "");
       if (result.data.status === "success") {
@@ -154,8 +162,9 @@ const FormTask = () => {
     const inputEmail = e.target.value;
     const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
     
-
+    setLoadingEmailCheck(true);
     if (!emailPattern.test(inputEmail)) {
+      setLoadingEmailCheck(false)
       setAssignToError("Invalid email format. Please enter a valid @gmail.com email address.");
       return;
     }
@@ -166,12 +175,16 @@ const FormTask = () => {
       if (result.data.data.documents.length === 0) {
         setAssignToError("This email is not registered in the Task app.");
         setDisableBtn(true)
+        setLoadingEmailCheck(false)
       } else {
+        setAssignToError("Sucess")
         setDisableBtn(false)
-        setAssignToError(null); // Clear the error message if email is found
+        setLoadingEmailCheck(false)
+        // setAssignToError(null); 
       }
     } catch (error) {
       setDisableBtn(true)
+      setLoadingEmailCheck(false)
       console.error("Error checking email:", error);
       setAssignToError("Error checking email. Please try again.");
     }
@@ -280,7 +293,11 @@ const FormTask = () => {
               name="assignTo"
               render={({ field }) => (
                 <FormItem>
+                  <div className="flex space-x-10 mb-5">
                   <FormLabel>Assignee Email</FormLabel>
+                  {loadingEmailCheck && <Loader />}
+                  </div>
+                  
                   <FormControl>
                     <Input
                       placeholder="Assignee Email"
@@ -292,7 +309,7 @@ const FormTask = () => {
                   </FormControl>
                   {assignToError && (
                     <FormMessage className="text-red-600">
-                      {assignToError}
+                      {assignToError === "Sucess"?<div className="text-green-500 flex items-center space-x-3 gap-3"><AiOutlineCheckCircle size={"15"}/>Email entered is present </div>:<div className="flex gap-3 items-center"><AiOutlineClose size={"15"}/>{assignToError}</div>}
                     </FormMessage>
                   )}
                 </FormItem>
