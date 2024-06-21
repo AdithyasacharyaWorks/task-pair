@@ -1,5 +1,5 @@
 import { getUserSession } from "@/lib/session";
-import DetailPage from "./detailPage";
+import DetailPage from "./DetailPage";
 
 
 const TaskDetails =async ({ params }: any) => {

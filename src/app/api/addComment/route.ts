@@ -8,8 +8,8 @@ export async function POST(req: Request) {
 
 
     const data = await database.getDocument(dbId,collectionId,taskId)
-    console.log(data.comments)
-    // Add new comment to the comments array and update document directly
+
+
     const updatedDocument = await database.updateDocument(dbId, collectionId, taskId, {
       comments: [ ...data.comments,`${JSON.stringify(comment)}`],
     });

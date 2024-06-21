@@ -54,6 +54,8 @@ const DetailPage = ({ params ,userData}: any) => {
   const [isStatusChanged, setIsStatusChanged] = useState(false);
   const router = useRouter();
   const [status,setStatus] = useState()
+  const [addCommentLoading,setAddCommentLoading] = useState<boolean>(false)
+  const [errorAddingComment,setErrorAddingComment] = useState<string>("")
 
 
   useEffect(() => {
@@ -90,6 +92,9 @@ const DetailPage = ({ params ,userData}: any) => {
   };
 
   const handleAddComment = async () => {
+    setErrorAddingComment("")
+
+    console.log(newComment)
     const username = userData?.email; // Assuming username is based on email for now
     const timestamp = new Date().toLocaleString();
     const comment = {
@@ -98,11 +103,11 @@ const DetailPage = ({ params ,userData}: any) => {
       timestamp,
     };
 
-    // Update frontend state optimistically
-    setComments([...comments, comment]);
+    // // Update frontend state optimistically
+    
     setNewComment("");
 
-    // Prepare data to be sent to backend
+    setAddCommentLoading(true)
     const body = {
       taskId: data.$id, // Assuming taskId is unique identifier of task
       comment,
@@ -112,9 +117,12 @@ const DetailPage = ({ params ,userData}: any) => {
       // Send comment to backend
       const response = await addComment(body);
       console.log("Comment added successfully:", response.data);
+      setAddCommentLoading(false)
+      setComments([...comments, comment]);
     } catch (error) {
       console.error("Failed to add comment:", error);
-      // Handle error and possibly revert state changes
+      setErrorAddingComment("Failed to add comment")
+      setAddCommentLoading(false)
     }
   };
 
@@ -231,7 +239,7 @@ const DetailPage = ({ params ,userData}: any) => {
                 {comments.map((comment, index) => (
                   <div key={index} className="p-3 bg-[#30363d] rounded-lg">
                     <p className="text-white">
-                      <strong>{comment.username}</strong>{" "}
+                      <span>{comment.username}<span className="ml-2 text-blue-600">{comment.username === userData.email ?"(you)":""}</span></span>{" "}
                       <span className="text-gray-500 text-sm">
                         ({comment.timestamp})
                       </span>
@@ -240,6 +248,7 @@ const DetailPage = ({ params ,userData}: any) => {
                   </div>
                 ))}
               </div>
+              <div className="text-red-700">{errorAddingComment!=="" && errorAddingComment}</div>
               <div className="flex space-x-3">
                 <Input
                   value={newComment}
@@ -247,14 +256,14 @@ const DetailPage = ({ params ,userData}: any) => {
                   placeholder="Add a comment..."
                   className="flex-grow bg-[#30363d] text-white"
                 />
-                <Button
+                {!addCommentLoading ?<Button
                   variant="default"
                   size="sm"
                   onClick={handleAddComment}
                   className="bg-blue-600 hover:bg-blue-700 text-white"
                 >
-                  Add Comment
-                </Button>
+                 Add Comment
+                </Button>:<Loader />}
               </div>
             </div>
           )}
