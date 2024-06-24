@@ -25,15 +25,6 @@ const CreateProjectPage = () => {
 
   const handleCreateProject = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle project creation logic here
-    console.log({
-      projectName,
-      description,
-      startDate,
-      endDate,
-      teamMembers,
-      status,
-    });
 
     // Redirect to another page or show success message
     router.push("/projects");

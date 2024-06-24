@@ -81,7 +81,6 @@ export async function GET(req: NextRequest) {
 
         const url = new URL(req.url);
         const email = url.searchParams.get('email') || ""
-        console.log("get request for list")
 
         const res = await database.listDocuments(dbId, collectionId, [
             Query.orderDesc("$updatedAt"),
@@ -99,7 +98,6 @@ export async function GET(req: NextRequest) {
         });
 
     } catch (error: Errors) {
-        console.log(error);
         return NextResponse.json({
             success: false,
             message: "There is some error in fetching data",

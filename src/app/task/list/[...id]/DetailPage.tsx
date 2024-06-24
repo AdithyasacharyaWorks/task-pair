@@ -180,7 +180,6 @@ const DetailPage = ({ params, userData }: any) => {
       if (response.data.success) {
         // Update status in the local state
         setStatus(status);
-        console.log("Status updated to:", status);
   
         // Update change log state
         setChangeLog([...changeLog, logEntry]);

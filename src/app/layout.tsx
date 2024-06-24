@@ -6,8 +6,8 @@ import { getUserSession } from "@/lib/session";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Project Management App",
-  description: "Project Management Dashboard",
+  title: "Task Management App",
+  description: "Task Dashboard",
 };
 
 
@@ -17,7 +17,6 @@ export default async  function RootLayout({
   children: React.ReactNode;
 }) {
   const user = await getUserSession()
-  console.log(user)
 
   return (
     <html lang="en">

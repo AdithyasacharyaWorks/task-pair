@@ -28,14 +28,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { database, dbId, userCollectionId, Query, collectionId } from "@/backend";
 import checkEmail from "../actions/checkEmail";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { AiOutlineClose } from "react-icons/ai";
-
-
-
-
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -51,9 +46,22 @@ const formSchema = z.object({
     })
     .optional(), // Making assignTo optional since it's dynamically set
   priority: z.string(),
-  deadline: z.string().refine((value) => !!value, {
-    message: "Deadline is required.",
-  }), // Accepts any string since we'll handle file uploads separately
+  deadline: z
+    .string()
+    .refine((value) => !!value, {
+      message: "Deadline is required.",
+    })
+    .refine(
+      (value) => {
+        // Custom refinement to check if the date is greater than or equal to today
+        const today = new Date();
+        const selectedDate = new Date(value);
+        return selectedDate >= today;
+      },
+      {
+        message: "Deadline must be today or in the future.",
+      }
+    ),
 });
 
 const FormTask = () => {
@@ -64,8 +72,8 @@ const FormTask = () => {
   const [assignToSelf, setAssignToSelf] = useState(false); // Toggle state
   const [email, setEmail] = useState<string | null>(null);
   const [assignToError, setAssignToError] = useState<string | null>(null);
-  const [disableBtn,setDisableBtn] = useState<boolean>(true)
-  const [loadingEmailCheck,setLoadingEmailCheck] = useState<boolean>(false)
+  const [disableBtn, setDisableBtn] = useState<boolean>(true);
+  const [loadingEmailCheck, setLoadingEmailCheck] = useState<boolean>(false);
 
   // Define the types
   type User = {
@@ -89,7 +97,6 @@ const FormTask = () => {
     });
   }, []);
 
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -102,34 +109,31 @@ const FormTask = () => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-
     setLoading(true);
     if (assignToSelf) {
-      values.assignTo = email || ""; 
+      values.assignTo = email || "";
     }
 
-
     try {
-      const assignTo = values.assignTo || ""; 
+      const assignTo = values.assignTo || "";
       const result = await createTask({ ...values, assignTo }, email || "");
       if (result.data.status === "success") {
         setStopShowingAlert(true);
         setAlertMessage("Successfully created task");
         setIsSuccess("success");
-        setAssignToError(null)
+        setAssignToError(null);
         form.reset();
-
       } else {
         setStopShowingAlert(true);
         setAlertMessage("Failed to create task");
         setIsSuccess("error");
-        setAssignToError(null)
+        setAssignToError(null);
       }
     } catch (error) {
       setStopShowingAlert(true);
       setAlertMessage("Failed to create task");
       setIsSuccess("error");
-      setAssignToError(null)
+      setAssignToError(null);
     } finally {
       setLoading(false);
       setTimeout(() => {
@@ -142,41 +146,43 @@ const FormTask = () => {
     const newAssignToSelf = !assignToSelf;
     setAssignToSelf(newAssignToSelf);
     if (newAssignToSelf) {
-      form.setValue("assignTo", email || ""); 
-      setDisableBtn(false)
+      form.setValue("assignTo", email || "");
+      setDisableBtn(false);
       setAssignToError(null);
     } else {
-      form.setValue("assignTo", ""); 
-      setDisableBtn(true)
+      form.setValue("assignTo", "");
+      setDisableBtn(true);
     }
   };
   const handleEmailAssigned = async (e: any) => {
     const inputEmail = e.target.value;
     const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-    
+
     setLoadingEmailCheck(true);
     if (!emailPattern.test(inputEmail)) {
-      setLoadingEmailCheck(false)
-      setAssignToError("Invalid email format. Please enter a valid @gmail.com email address.");
+      setLoadingEmailCheck(false);
+      setAssignToError(
+        "Invalid email format. Please enter a valid @gmail.com email address."
+      );
       return;
     }
 
     try {
-      const result = await checkEmail(inputEmail)
+      const result = await checkEmail(inputEmail);
 
       if (result.data.data.documents.length === 0) {
         setAssignToError("This email is not registered in the Task app.");
-        setDisableBtn(true)
-        setLoadingEmailCheck(false)
+        setDisableBtn(true);
+        setLoadingEmailCheck(false);
       } else {
-        setAssignToError("Sucess")
-        setDisableBtn(false)
-        setLoadingEmailCheck(false)
-        // setAssignToError(null); 
+        setAssignToError("Sucess");
+        setDisableBtn(false);
+        setLoadingEmailCheck(false);
+        // setAssignToError(null);
       }
     } catch (error) {
-      setDisableBtn(true)
-      setLoadingEmailCheck(false)
+      setDisableBtn(true);
+      setLoadingEmailCheck(false);
       console.error("Error checking email:", error);
       setAssignToError("Error checking email. Please try again.");
     }
@@ -186,7 +192,6 @@ const FormTask = () => {
     <div className="py-2 flex items-center mt-5 justify-center bg-[#0E1117] text-white">
       <div className="bg-[#0E1117] p-8 rounded w-full max-w-4xl border border-gray-600 shadow-lg hover:shadow-xl transition-shadow duration-300">
         {showAlert && alertMessage !== "" && (
-          
           <AlerList type={isSuccess} message={alertMessage} />
         )}
         <Form {...form}>
@@ -264,9 +269,15 @@ const FormTask = () => {
                           type="date"
                           placeholder="Deadline"
                           {...field}
+                          min={new Date().toISOString().split("T")[0]} // Set min to today's date
                           className="w-full bg-white text-black"
                         />
                       </FormControl>
+                      {form.formState.errors.deadline && (
+                        <FormMessage className="text-red-600">
+                          {form.formState.errors.deadline.message}
+                        </FormMessage>
+                      )}
                     </FormItem>
                   )}
                 />
@@ -287,10 +298,10 @@ const FormTask = () => {
               render={({ field }) => (
                 <FormItem>
                   <div className="flex space-x-10 mb-5">
-                  <FormLabel>Assignee Email</FormLabel>
-                  {loadingEmailCheck && <Loader />}
+                    <FormLabel>Assignee Email</FormLabel>
+                    {loadingEmailCheck && <Loader />}
                   </div>
-                  
+
                   <FormControl>
                     <Input
                       placeholder="Assignee Email"
@@ -302,7 +313,17 @@ const FormTask = () => {
                   </FormControl>
                   {assignToError && (
                     <FormMessage className="text-red-600">
-                      {assignToError === "Sucess"?<div className="text-green-500 flex items-center space-x-3 gap-3"><AiOutlineCheckCircle size={"15"}/>Email entered is present </div>:<div className="flex gap-3 items-center"><AiOutlineClose size={"15"}/>{assignToError}</div>}
+                      {assignToError === "Sucess" ? (
+                        <div className="text-green-500 flex items-center space-x-3 gap-3">
+                          <AiOutlineCheckCircle size={"15"} />
+                          Email entered is present{" "}
+                        </div>
+                      ) : (
+                        <div className="flex gap-3 items-center">
+                          <AiOutlineClose size={"15"} />
+                          {assignToError}
+                        </div>
+                      )}
                     </FormMessage>
                   )}
                 </FormItem>
@@ -311,7 +332,12 @@ const FormTask = () => {
             {loading ? (
               <Loader />
             ) : (
-              <Button variant="default" size="sm" type="submit" disabled={disableBtn}>
+              <Button
+                variant="default"
+                size="sm"
+                type="submit"
+                disabled={disableBtn}
+              >
                 Submit
               </Button>
             )}

@@ -3,7 +3,6 @@ import { NextResponse,NextRequest } from "next/server";
 import { getSession } from "next-auth/react";
 
 const getusers=async ()=>{
-    console.log("here inside function ")
     const session = await getSession()
     return session
 }
@@ -12,7 +11,6 @@ export async function GET(req: NextRequest) {
 
         const session = await getusers()
 
-        console.log(session)
     
 
         const url = new URL(req.url);
@@ -21,7 +19,6 @@ export async function GET(req: NextRequest) {
     
 
 
-        console.log("calling the detail with task id ")
         const res = await database.listDocuments(dbId, collectionId, [
             Query.limit(50),
             // Query.equal('email', "adithyasacharya929@gmail.com"),

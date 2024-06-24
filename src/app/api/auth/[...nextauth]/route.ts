@@ -31,12 +31,10 @@ const authOptions: NextAuthOptions = {
               { email: email }
             );
           } catch (err) {
-            console.log(err);
             return false;
           }
         }
       } catch (err) {
-        console.log(err);
         return false;
       }
       return true;

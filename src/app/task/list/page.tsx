@@ -15,7 +15,6 @@ const Page = () => {
         setError(false);
         task().then((res) => res.json())
              .then((res) => setData(res.data.documents)).catch((res)=>{
-                console.log("here inside this errosr")
                 setError(true);
              })
     }, []);

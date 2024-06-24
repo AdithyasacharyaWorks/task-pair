@@ -1,28 +1,25 @@
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
+  CardDescription,
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getUserSession } from "@/lib/session";
-import { cn } from '@/lib/utils';
 import { redirect } from "next/navigation";
+import UserDetail from "./UserDetail";
+import { cn } from '@/lib/utils';
 
 const ProfilePage = async () => {
   const user = await getUserSession();
 
   const handleLogout = async () => {
-    'use server'
-    redirect('/api/auth/signout')
+    "use server";
+    redirect("/api/auth/signout");
   };
 
   return (
@@ -35,7 +32,9 @@ const ProfilePage = async () => {
               <AvatarFallback className="bg-white">UN</AvatarFallback>
             </Avatar>
             <div className={cn("cursor-pointer text-sm font-light")}>
-              <CardTitle className="text-xl font-semibold">{user?.name}</CardTitle>
+              <CardTitle className="text-xl font-semibold">
+                {user?.name}
+              </CardTitle>
               <CardDescription className="">{user?.email}</CardDescription>
             </div>
           </div>
@@ -47,23 +46,16 @@ const ProfilePage = async () => {
               <span className="text-sm font-medium text-white">Email:</span>
               <span className="text-sm">{user?.email}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-sm font-medium text-white">Location:</span>
-              <span className="text-sm">City, Country</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm font-medium text-white">Joined:</span>
-              <span className="text-sm">January 2023</span>
-            </div>
+            <UserDetail />
           </div>
         </CardContent>
         <Separator />
         <CardFooter className="flex justify-end space-x-2 mt-4">
-          <Button variant="secondary" >Logout</Button>
+          <Button variant="secondary">Logout</Button>
         </CardFooter>
       </Card>
     </form>
   );
-}
+};
 
 export default ProfilePage;

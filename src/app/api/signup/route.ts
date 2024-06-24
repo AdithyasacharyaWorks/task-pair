@@ -8,13 +8,10 @@ import { account,ID ,database,dbId,userCollectionId, Query} from "@/backend/inde
 export  async function POST(request:Request){
     const body = await request.json()
 
-    console.log(body)
-
 
     const checkForExistEmail = await database.listDocuments(dbId,userCollectionId,
        [Query.equal('email',body.email)]
     )
-    console.log(checkForExistEmail.total)
 
     if(checkForExistEmail.total !== 0){
         return NextResponse.json({

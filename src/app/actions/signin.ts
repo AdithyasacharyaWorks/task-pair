@@ -48,7 +48,7 @@ export default async function signin(userdetail:userDetail){
       password:userdetail.password
     })   
 
-    console.log(result)
+
     return result
   } catch (error) {
     return error

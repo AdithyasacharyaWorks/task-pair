@@ -47,7 +47,7 @@ const LoginPage = () => {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true)
     const result:any = await signin(values)
-    console.log(result)
+
     const userId = result.data.user[0];
     const userEmail = result.data.user[1];
     setState((prevState) => ({

@@ -14,7 +14,6 @@ export async function GET(req: NextRequest) {
             // Query.notEqual('email',email)
         ]);
 
-        console.log(res.documents[0].isAccepted)
         let finalRes:any = ''
         if(res.documents[0].isAccepted === "Accept"){
              finalRes= "Accepted"
