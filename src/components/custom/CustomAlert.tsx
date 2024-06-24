@@ -1,6 +1,6 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { MdFileDownloadDone } from "react-icons/md";
-import { FcCancel } from "react-icons/fc";
+// import { MdFileDownloadDone } from "react-icons/md";
+// import { FcCancel } from "react-icons/fc";
 
 import { useState } from "react";
 
@@ -20,7 +20,7 @@ const AlerList = ({
   // const [varient] = useState<VariantTypes>(type==="success"?"positive":"destructive")
   return (
     <Alert variant={"default"} className="flex items-center">
-      {type === "success" ? <MdFileDownloadDone /> : <FcCancel />}
+      {/* {type === "success" ? <MdFileDownloadDone /> : <FcCancel />} */}
       <AlertDescription>{message}</AlertDescription>
     </Alert>
   );

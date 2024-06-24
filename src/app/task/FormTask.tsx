@@ -29,8 +29,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import checkEmail from "../actions/checkEmail";
-import { AiOutlineCheckCircle } from "react-icons/ai";
-import { AiOutlineClose } from "react-icons/ai";
+// import { AiOutlineCheckCircle } from "react-icons/ai";
+// import { AiOutlineClose } from "react-icons/ai";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -315,12 +315,12 @@ const FormTask = () => {
                     <FormMessage className="text-red-600">
                       {assignToError === "Sucess" ? (
                         <div className="text-green-500 flex items-center space-x-3 gap-3">
-                          <AiOutlineCheckCircle size={"15"} />
+                          {/* <AiOutlineCheckCircle size={"15"} /> */}
                           Email entered is present{" "}
                         </div>
                       ) : (
                         <div className="flex gap-3 items-center">
-                          <AiOutlineClose size={"15"} />
+                          {/* <AiOutlineClose size={"15"} /> */}
                           {assignToError}
                         </div>
                       )}
