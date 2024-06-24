@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import baseUrl from "@/config/config";
 
 type UserData = {
   taskName: string;
@@ -86,7 +87,7 @@ const DetailPage = ({ params, userData }: any) => {
       setLoading(true);
       try {
         const res = await axios.get(
-          `http://localhost:3000/api/taskdetail?email=adithyasacharya929@gmail.com&taskId=${params.id}`
+          `${process.env.NODE_ENV === 'production' ? baseUrl.production : baseUrl.development}/api/taskdetail?email=adithyasacharya929@gmail.com&taskId=${params.id}`
         );
         const fetchedData = res.data.data.documents[0];
         setData(fetchedData);

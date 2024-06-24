@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button'; // Assuming you have a Button component
 import Loader from '@/components/custom/Loader'; // Assuming the path to Loader component
 import axios from 'axios';
+import baseUrl from '@/config/config';
 
 const TaskDetail = ({ params }: any) => {
   const [task, setTask] = useState<any>(null);
@@ -16,7 +17,7 @@ const TaskDetail = ({ params }: any) => {
   useEffect(() => {
     const fetchTaskDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/request/detail?id=${params?.id}`);
+        const response = await axios.get(`${process.env.NODE_ENV === 'production' ? baseUrl.production : baseUrl.development}/api/request/detail?id=${params?.id}`);
         const responseData = response.data;
         if (responseData.data === "Accepted") {
           setIsAcceptedOrDeclined("Accepted");
@@ -41,7 +42,7 @@ const TaskDetail = ({ params }: any) => {
 
   const handleAccept = async () => {
     try {
-      await axios.post(`http://localhost:3000/api/request/status?id=${params.id}&status=Accepted`);
+      await axios.post(`${process.env.NODE_ENV === 'production' ? baseUrl.production : baseUrl.development}/api/request/status?id=${params.id}&status=Accepted`);
       setSuccessMessage('Task accepted successfully.'); // Set success message
       router.push(`/task/list/${params.id}`); // Redirect to task list with the specific ID
     } catch (error) {
@@ -52,7 +53,7 @@ const TaskDetail = ({ params }: any) => {
 
   const handleDecline = async () => {
     try {
-      await axios.post(`http://localhost:3000/api/request/status?id=${params.id}&status=Declined`);
+      await axios.post(`${process.env.NODE_ENV === 'production' ? baseUrl.production : baseUrl.development}/api/request/status?id=${params.id}&status=Declined`);
       setSuccessMessage('Task declined successfully.'); // Set success message
       router.push(`/requests`); // Redirect to requests page
     } catch (error) {

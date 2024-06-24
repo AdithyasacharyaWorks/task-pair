@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import CardHoverEffect from "./CardHoverEffect";
 import Loader from "@/components/custom/Loader"; // Assuming the path to Loader component
 import axios from "axios";
+import baseUrl from "@/config/config";
 
 interface Project {
     title: string;
@@ -34,7 +35,7 @@ const Requestclient = ({userEmail}:{userEmail:string}) => {
 
       try {
         const response = await axios.get<ApiResponse>(
-          `http://localhost:3000/api/request?email=${userEmail}`
+          `${process.env.NODE_ENV === 'production' ? baseUrl.production : baseUrl.development}/api/request?email=${userEmail}`
         );
 
         const data = response.data.data.documents;

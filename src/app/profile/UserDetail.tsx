@@ -2,6 +2,7 @@
 import React, { useState ,useEffect } from "react";
 import axios from "axios";
 import Loader from "@/components/custom/Loader";
+import baseUrl from "@/config/config";
 
 
 const UserDetail = ({ user }: any) => {
@@ -22,7 +23,7 @@ const UserDetail = ({ user }: any) => {
         setLoading(true)
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/userDetail"
+          `${process.env.NODE_ENV === 'production' ? baseUrl.production : baseUrl.development}/api/userDetail`
         );
 
         setUserDetail(response.data.data[0]);

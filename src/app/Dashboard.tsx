@@ -7,7 +7,7 @@ import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
 import axios from "axios";
 import Image from "next/image";
 import logo from "@/utils/1.jpeg";
-
+import baseUrl from "@/config/config"
 const Dashboard = ({ user }: any) => {
   const router = useRouter();
   const [numberOfRequest, setNumberOfRequest] = useState(0);
@@ -18,7 +18,7 @@ const Dashboard = ({ user }: any) => {
   ];
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/api/request?email=${user.email}`).then((res) => {
+    axios.get(`${process.env.NODE_ENV === 'production' ? baseUrl.production : baseUrl.development}/api/request?email=${user.email}`).then((res) => {
       setNumberOfRequest(res.data.data.total);
     });
   }, []);
