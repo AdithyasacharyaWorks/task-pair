@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { FaBug } from "react-icons/fa";
+// import { FaBug } from "react-icons/fa";
 import Cookies from "js-cookie";
 import { useAppContext } from "@/lib/userContextProvder";
 import { useRouter } from "next/navigation";
@@ -71,7 +71,7 @@ const Navbar = () => {
     >
       <Menu setActive={setActive}>
         <div className="flex items-center">
-          <FaBug color="green" />
+          {/* <FaBug color="green" /> */}
         </div>
         <Link href={"/"}>
           <div className="text-black">Home</div>

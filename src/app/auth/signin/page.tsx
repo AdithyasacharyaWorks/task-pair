@@ -2,8 +2,8 @@
 import { signIn, getProviders } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
-import { FcGoogle } from 'react-icons/fc';
-import { MdArrowForward } from 'react-icons/md';
+// import { FcGoogle } from 'react-icons/fc';
+// import { MdArrowForward } from 'react-icons/md';
 import { Button } from '@/components/ui/button';
 
 const SignIn: React.FC = () => {
@@ -62,10 +62,10 @@ const SignIn: React.FC = () => {
           transition={{ duration: 0.3 }}
         >
           <span style={{ marginRight: '4px' }}>
-            <FcGoogle size={24} />
+            {/* <FcGoogle size={24} /> */}
           </span>
-          <span style={{ marginLeft: '4px' }}>Sign in with Google</span>
-          <span className='ml-2'><MdArrowForward size={20} /></span>
+          {/* <span style={{ marginLeft: '4px' }}>Sign in with Google</span> */}
+          {/* <span className='ml-2'><MdArrowForward size={20} /></span> */}
         </motion.span>
         <motion.span
           className="text-gray-400 flex items-center"
@@ -73,7 +73,7 @@ const SignIn: React.FC = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.2 }}
         >
-          Assign tasks <span style={{ marginLeft: '4px' }}><MdArrowForward size={20} /></span>
+          {/* Assign tasks <span style={{ marginLeft: '4px' }}><MdArrowForward size={20} /></span> */}
         </motion.span>
         <motion.span
           className="text-gray-400 flex items-center"
@@ -81,7 +81,7 @@ const SignIn: React.FC = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.4 }}
         >
-          Manage tasks <span style={{ marginLeft: '4px' }}><MdArrowForward size={20} /></span>
+          {/* Manage tasks <span style={{ marginLeft: '4px' }}><MdArrowForward size={20} /></span> */}
         </motion.span>
         <motion.span
           className="text-gray-400 flex items-center"
@@ -89,7 +89,7 @@ const SignIn: React.FC = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.6 }}
         >
-          Complete tasks <span style={{ marginLeft: '4px' }}></span>
+          {/* Complete tasks <span style={{ marginLeft: '4px' }}></span> */}
         </motion.span>
       </motion.div>
       <motion.div
@@ -108,7 +108,7 @@ const SignIn: React.FC = () => {
               className="flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300 w-full"
             >
               <div className="mr-2">
-                <FcGoogle size={24} />
+                {/* <FcGoogle size={24} /> */}
               </div>
               Sign in with {provider.name}
             </button>
