@@ -20,7 +20,6 @@ const Page = () => {
              })
     }, []);
 
-    console.log(data)
 
 
     type Task = {

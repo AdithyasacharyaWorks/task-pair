@@ -1,8 +1,11 @@
 import { ID, dbId, collectionId, database, Query } from "@/backend/index";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from 'next/headers';
+import { getUserSession } from "@/lib/session";
 
 type Errors=any
+
+
 
 
 export async function POST(req: NextRequest) {
@@ -59,10 +62,22 @@ export async function POST(req: NextRequest) {
 //             data:"there is some error in fetching data"
 //         })
 //     }
+
+
+
 // }
+
+type User ={
+    name:string |undefined,
+    email:string| undefined,
+    image:string|undefined
+}
 export async function GET(req: NextRequest) {
     try {
-    
+        const user:any = await getUserSession()
+
+        
+
 
         const url = new URL(req.url);
         const email = url.searchParams.get('email') || ""
@@ -72,7 +87,8 @@ export async function GET(req: NextRequest) {
             Query.orderDesc("$updatedAt"),
             Query.limit(100),
             Query.or( [Query.equal('assignedTo',email),Query.equal('email',email)]),
-            Query.equal('isAccepted','Accept'),
+            Query.or([Query.or([ Query.equal('isAccepted','Accept'),Query.equal('isAccepted','Decline')]),
+            Query.and([Query.equal('email',user?.email),Query.equal('isAccepted','pending')])])
 
         ]);
 

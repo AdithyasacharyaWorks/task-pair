@@ -80,6 +80,7 @@ const FormTask = () => {
   };
 
   useEffect(() => {
+    setAssignToError(null);
     session().then((res: UserSession | any) => {
       if (res !== null && res.user.email !== null) {
         setEmail(res.user.email);
@@ -102,42 +103,33 @@ const FormTask = () => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
 
-    console.log("inside submit")
     setLoading(true);
     if (assignToSelf) {
-      values.assignTo = email || ""; // Assign logged-in user's email if "Assign to me" is checked
+      values.assignTo = email || ""; 
     }
 
-    // Check if there is an assignTo error
-    // if (assignToError) {
-    //   setLoading(false);
-    //   setAlertMessage(assignToError);
-    //   setIsSuccess("error");
-    //   setStopShowingAlert(true);
-    //   setTimeout(() => {
-    //     setStopShowingAlert(false);
-    //   }, 3000);
-    //   return;
-    // }
 
     try {
-      console.log("here")
-      const assignTo = values.assignTo || ""; // Ensure assignTo is a string
+      const assignTo = values.assignTo || ""; 
       const result = await createTask({ ...values, assignTo }, email || "");
       if (result.data.status === "success") {
         setStopShowingAlert(true);
         setAlertMessage("Successfully created task");
         setIsSuccess("success");
+        setAssignToError(null)
         form.reset();
+
       } else {
         setStopShowingAlert(true);
         setAlertMessage("Failed to create task");
         setIsSuccess("error");
+        setAssignToError(null)
       }
     } catch (error) {
       setStopShowingAlert(true);
       setAlertMessage("Failed to create task");
       setIsSuccess("error");
+      setAssignToError(null)
     } finally {
       setLoading(false);
       setTimeout(() => {
@@ -194,6 +186,7 @@ const FormTask = () => {
     <div className="py-2 flex items-center mt-5 justify-center bg-[#0E1117] text-white">
       <div className="bg-[#0E1117] p-8 rounded w-full max-w-4xl border border-gray-600 shadow-lg hover:shadow-xl transition-shadow duration-300">
         {showAlert && alertMessage !== "" && (
+          
           <AlerList type={isSuccess} message={alertMessage} />
         )}
         <Form {...form}>

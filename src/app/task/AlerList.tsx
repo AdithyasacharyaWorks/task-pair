@@ -10,9 +10,8 @@ export const AlerList = ({
   message: string;
 }) => {
   return (
-    <Alert variant="positive">
-      {type === "success" ? <MdFileDownloadDone /> : <FcCancel />}
-      <AlertTitle>Heads up!</AlertTitle>
+    <Alert variant="positive" className="flex justify-center items-center">
+      <span>{type === "success" ? <MdFileDownloadDone /> : <FcCancel />}</span>
       <AlertDescription>{message}</AlertDescription>
     </Alert>
   );
