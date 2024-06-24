@@ -1,5 +1,5 @@
 const baseUrl = {
     development: 'http://localhost:3000',
-    production: 'https://task-pair.vercel.app',
+    production: 'https://taskpair.vercel.app/',
 };
 export default baseUrl;
