@@ -60,6 +60,7 @@ const SignIn: React.FC = () => {
             <FcGoogle size={24} />
           </span>
           <span style={{ marginLeft: '4px' }}>Sign in with Google</span>
+          <span className='ml-2'><MdArrowForward size={20} /></span>
         </motion.span>
         <motion.span
           className="text-gray-400 flex items-center"
@@ -83,8 +84,8 @@ const SignIn: React.FC = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.6 }}
         >
-          Complete tasks <span style={{ marginLeft: '4px' }}><MdArrowForward size={20} /></span>
-          <span style={{ marginLeft: '4px' }}><BiTimeFive size={20} /></span>
+          Complete tasks <span style={{ marginLeft: '4px' }}></span>
+          {/* <span style={{ marginLeft: '4px' }}><BiTimeFive size={20} /></span> */}
         </motion.span>
       </motion.div>
       <motion.div
