@@ -45,7 +45,7 @@ const authOptions: NextAuthOptions = {
       // Allows relative callback URLs
       if (url.startsWith("/")) return `https://task-pair-1.netlify.app${url}`;
       // Allows callback URLs on the same origin
-      else if (new URL(url).origin ==="https://task-pair-1.netlify.app") return url;
+      else if (new URL(url).origin ==="https://task-pair-1.netlify.app") return "https://task-pair-1.netlify.app";
       return "https://task-pair-1.netlify.app";
     },
   },
