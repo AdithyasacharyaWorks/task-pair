@@ -3,14 +3,14 @@ import { dbId, database, userCollectionId, Query, ID } from "@/backend";
 import nextAuth from "next-auth";
 import NextAuth from "next-auth/next";
 
-import GoogleProvider from "next-auth/providers/google";
+import GoogleaProvider from "next-auth/providers/google";
 
 const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
   providers: [
-    GoogleProvider({
+    GoogleaProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
@@ -24,7 +24,7 @@ const authOptions: NextAuthOptions = {
         ]);
         if (data.total === 0) {
           try {
-            await database.createDocument(
+            const data2 = await database.createDocument(
               dbId,
               userCollectionId,
               ID.unique(),
@@ -40,15 +40,15 @@ const authOptions: NextAuthOptions = {
       return true;
     },
     async redirect({ url, baseUrl }) {
-      const targetUrl = "https://task-pair-1.netlify.app";
-      if (url.startsWith("/")) return `${targetUrl}${url}`;
-      if (new URL(url).origin === targetUrl) return url;
-      return targetUrl;
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `https://task-pair-1.netlify.app${url}`;
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === "https://task-pair-1.netlify.app") return "https://task-pair-1.netlify.app";
+      return "https://task-pair-1.netlify.app";
     },
   },
   pages: {
-    signIn: "https://task-pair-1.netlify.app/auth/signin",
-    signOut: "https://task-pair-1.netlify.app",
+    signIn: "/auth/signin",
   },
 };
 
