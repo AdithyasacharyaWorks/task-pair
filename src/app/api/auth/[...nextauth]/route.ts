@@ -1,7 +1,7 @@
+// pages/api/auth/[...nextauth].ts
 import { NextAuthOptions } from "next-auth";
 import { dbId, database, userCollectionId, Query, ID } from "@/backend";
-import nextAuth from "next-auth";
-import NextAuth from "next-auth/next";
+import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
 const authOptions: NextAuthOptions = {
@@ -39,16 +39,13 @@ const authOptions: NextAuthOptions = {
       return true;
     },
     async redirect({ url, baseUrl }) {
-      // Allows relative callback URLs
-      if (url.startsWith("/")) return `https://task-pair-1.netlify.app${url}`;
-      // Allows callback URLs on the same origin
-      if (new URL(url).origin === "https://task-pair-1.netlify.app") return url;
-      return "https://task-pair-1.netlify.app";
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
     },
   },
   pages: {
     signIn: "/auth/signin",
-    signOut: "https://task-pair-1.netlify.app",
   },
 };
 
