@@ -15,7 +15,7 @@ import { getUserSession } from "@/lib/session";
 import { signOut } from "next-auth/react";
 import UserDetail from "./UserDetail";
 import { cn } from '@/lib/utils';
-import Cardfooter from "./CardFooter";
+import Cardfooter from "./Cardfooter";
 
 const ProfilePage = async () => {
   const user = await getUserSession();
