@@ -39,12 +39,12 @@ const authOptions: NextAuthOptions = {
       }
       return true;
     },
-    async redirect({ url }) {
+    async redirect({ url, baseUrl }) {
       // Allows relative callback URLs
-      if (url.startsWith("/")) return `https://task-pair.netlify.app${url}`;
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
       // Allows callback URLs on the same origin
-      else if (new URL(url).origin === "https://task-pair.netlify.app") return url;
-      return "https://task-pair.netlify.app";
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
     },
   },
   pages: {
