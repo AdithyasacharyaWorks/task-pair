@@ -40,7 +40,6 @@ const authOptions: NextAuthOptions = {
       return true;
     },
     async redirect({ url, baseUrl }) {
-      // Ensures all redirects go to the specified URL
       const targetUrl = "https://task-pair-1.netlify.app";
       if (url.startsWith("/")) return `${targetUrl}${url}`;
       if (new URL(url).origin === targetUrl) return url;
@@ -48,7 +47,8 @@ const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: "/auth/signin",
+    signIn: "https://task-pair-1.netlify.app/auth/signin",
+    signOut: "https://task-pair-1.netlify.app",
   },
 };
 
