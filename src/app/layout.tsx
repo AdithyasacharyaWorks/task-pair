@@ -6,7 +6,7 @@ import { getUserSession } from "@/lib/session";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Task Management App",
+  title: "Task Pair",
   description: "Task Dashboard",
 };
 
