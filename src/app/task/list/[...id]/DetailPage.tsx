@@ -73,6 +73,7 @@ const DetailPage = ({ params, userData }: any) => {
   const [changeLog, setChangeLog] = useState<ChangeLogEntry[]>([]);
   const router = useRouter();
   const [fetchingError, setFetchingError] = useState<string>();
+  const [isDeclined, setIsDeclined] = useState<boolean>(false);
 
   const convertToDDMMYY = (isoDate: string) => {
     const date = new Date(isoDate);
@@ -87,19 +88,27 @@ const DetailPage = ({ params, userData }: any) => {
       setLoading(true);
       try {
         const res = await axios.get(
-          `${process.env.NODE_ENV === 'production' ? baseUrl.production : baseUrl.development}/api/taskdetail?email=adithyasacharya929@gmail.com&taskId=${params.id}`
+          `${
+            process.env.NODE_ENV === "production"
+              ? baseUrl.production
+              : baseUrl.development
+          }/api/taskdetail?email=adithyasacharya929@gmail.com&taskId=${
+            params.id
+          }`
         );
         const fetchedData = res.data.data.documents[0];
+        setIsDeclined(res?.data?.data?.documents[0]?.isAccepted === "Decline");
+        console.log(res?.data?.data?.documents[0]?.isAccepted);
         setData(fetchedData);
         setStatus(fetchedData.status);
         setFetchingError("");
-  
+
         // Parse statusChange from string to object
         const parsedChangeLog = fetchedData.statusChange.map((entry: string) =>
           JSON.parse(entry)
         );
         setChangeLog(parsedChangeLog);
-  
+
         const parsedComments = fetchedData.comments.map((comment: string) =>
           JSON.parse(comment)
         );
@@ -113,7 +122,6 @@ const DetailPage = ({ params, userData }: any) => {
     };
     fetchTaskDetails();
   }, [params.id]);
-  
 
   const handleStatusChange = (value: any) => {
     setStatus(value);
@@ -159,7 +167,7 @@ const DetailPage = ({ params, userData }: any) => {
     setStatusLoading(true);
     setStatusError("");
     const previousStatus = data.status; // Capture previous status
-  
+
     try {
       // Prepare change log entry
       const logEntry = {
@@ -168,23 +176,19 @@ const DetailPage = ({ params, userData }: any) => {
         from: previousStatus,
         to: status,
       };
-  
 
-      const taskId= data.$id
+      const taskId = data.$id;
 
-       const  statusChange = logEntry
+      const statusChange = logEntry;
 
-  
-      const response =await updateStatus(taskId,
-        status,
-       statusChange)
+      const response = await updateStatus(taskId, status, statusChange);
       if (response.data.success) {
         // Update status in the local state
         setStatus(status);
-  
+
         // Update change log state
         setChangeLog([...changeLog, logEntry]);
-  
+
         setIsStatusChanged(false);
       } else {
         setStatusError("Failed to update status");
@@ -196,7 +200,6 @@ const DetailPage = ({ params, userData }: any) => {
       setStatusLoading(false);
     }
   };
-  
 
   const handleBackToList = () => {
     router.push("/task/list");
@@ -227,6 +230,7 @@ const DetailPage = ({ params, userData }: any) => {
                         <Select
                           value={status}
                           onValueChange={handleStatusChange}
+                          disabled={isDeclined} // Disable the status select if isDeclined is true
                         >
                           <SelectTrigger>
                             <SelectValue>
@@ -248,8 +252,14 @@ const DetailPage = ({ params, userData }: any) => {
                   </div>
                   <div className="text-red-500">{statusError}</div>
                   <div className="flex items-center space-x-2 px-3 py-1 rounded-lg bg-[#30363d] text-white text-md">
-                    <span>Priority:</span>
-                    <span className="text-red-500">{data?.priority}</span>
+                    {isDeclined ? (
+                      <span className="text-red-500">The task is declined</span>
+                    ) : (
+                      <div>
+                        <span>Priority:</span>
+                        <span className="text-red-500">{data?.priority}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="sm:pt-0 pt-2">
@@ -257,7 +267,7 @@ const DetailPage = ({ params, userData }: any) => {
                     variant="default"
                     size="sm"
                     onClick={handleUpdate}
-                    disabled={!isStatusChanged}
+                    disabled={!isStatusChanged || isDeclined} // Disable the update button if isDeclined is true
                     className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     Update Status
@@ -291,7 +301,8 @@ const DetailPage = ({ params, userData }: any) => {
                   <strong>Description:</strong> {data?.taskDesc}
                 </p>
                 <p className="text-gray-400">
-                  <strong>Deadline:</strong> <span>{convertToDDMMYY(data?.deadline)}</span>
+                  <strong>Deadline:</strong>{" "}
+                  <span>{convertToDDMMYY(data?.deadline)}</span>
                 </p>
               </div>
               <div className="flex justify-between items-center">
@@ -322,7 +333,7 @@ const DetailPage = ({ params, userData }: any) => {
               <h1 className="text-xl font-bold text-white">Task Details</h1>
             )}
           </div>
-          {fetchingError === "" && (
+          {fetchingError === "" && !isDeclined && (
             <div>
               <Tabs defaultValue="comments" className="w-full">
                 <TabsList className="w-full">
@@ -399,7 +410,12 @@ const DetailPage = ({ params, userData }: any) => {
                             Status changed from {entry.from} to {entry.to}
                           </p>
                           <div className="mt-2 text-gray-400 text-sm">
-                            <span>Changed by {entry.email === userData.email ?"You":entry.email}</span>
+                            <span>
+                              Changed by{" "}
+                              {entry.email === userData.email
+                                ? "You"
+                                : entry.email}
+                            </span>
                             <span className="ml-2">{entry.date}</span>
                           </div>
                         </div>
