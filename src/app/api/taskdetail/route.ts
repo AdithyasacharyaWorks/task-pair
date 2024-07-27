@@ -17,16 +17,13 @@ export async function GET(req: NextRequest) {
         }
         const session = await getusers()
 
-
         const url = new URL(req.url);
-        const email = url.searchParams.get('email') || ""
         const taskId = url.searchParams.get('taskId')|| ""
     
 
 
         const res = await database.listDocuments(dbId, collectionId, [
             Query.limit(50),
-            // Query.equal('email', "adithyasacharya929@gmail.com"),
             Query.equal('$id',taskId)
         ]);
 
