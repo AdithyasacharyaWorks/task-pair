@@ -4,7 +4,7 @@ import { dbId, database, userCollectionId, Query, ID } from "@/backend";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
@@ -39,9 +39,9 @@ const authOptions: NextAuthOptions = {
       return true;
     },
     async redirect({ url, baseUrl }) {
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-      if (new URL(url).origin === baseUrl) return url;
-      return baseUrl;
+      // if (url.startsWith("/")) return `${baseUrl}${url}`;
+      // if (new URL(url).origin === baseUrl) return url;
+      return "http://localhost:3000";
     },
   },
   pages: {
@@ -50,5 +50,6 @@ const authOptions: NextAuthOptions = {
 };
 
 const handler = NextAuth(authOptions);
+
 
 export { handler as GET, handler as POST };

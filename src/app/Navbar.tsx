@@ -67,7 +67,7 @@ const Navbar = () => {
     // </div>
 
     <div
-      className={cn("fixed top-10 inset-x-0 max-w-2xl mx-auto z-50", "top-2")}
+      className={cn("fixed top-10 inset-x-0 sm:max-w-2xl max-w-sm  mx-auto z-50", "top-2")}
     >
       <Menu setActive={setActive}>
         <div className="flex items-center">

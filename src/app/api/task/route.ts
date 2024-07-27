@@ -2,6 +2,8 @@ import { ID, dbId, collectionId, database, Query } from "@/backend/index";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from 'next/headers';
 import { getUserSession } from "@/lib/session";
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/route'; 
 
 type Errors=any
 
@@ -10,6 +12,12 @@ type Errors=any
 
 export async function POST(req: NextRequest) {
     try {
+
+
+        const session = await getServerSession(authOptions);
+      if (!session) {
+            return NextResponse.json({ status: 'error', message: 'Unauthorized' }, { status: 401 });
+        }
         const { taskName, taskDesc, assignedTo } = await req.json();
 
         const res = await database.createDocument(
@@ -73,7 +81,14 @@ type User ={
     image:string|undefined
 }
 export async function GET(req: NextRequest) {
-    try {
+        try {
+        const session = await getServerSession(authOptions);
+        if (!session) {
+            return NextResponse.json({ status: 'error', message: 'Unauthorized' }, { status: 401 });
+        }
+
+
+
         const user:any = await getUserSession()
 
         
@@ -81,6 +96,9 @@ export async function GET(req: NextRequest) {
 
         const url = new URL(req.url);
         const email = url.searchParams.get('email') || ""
+        if (session?.user?.email !== email) {
+            return NextResponse.json({ status: 'error', message: 'Unauthorized' }, { status: 401 });
+        }
 
         const res = await database.listDocuments(dbId, collectionId, [
             Query.orderDesc("$updatedAt"),

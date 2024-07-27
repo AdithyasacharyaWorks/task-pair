@@ -1,6 +1,8 @@
 import { database,dbId,collectionId,Query } from "@/backend";
 import { NextResponse,NextRequest } from "next/server";
 import { getSession } from "next-auth/react";
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/route'; 
 
 const getusers=async ()=>{
     const session = await getSession()
@@ -9,9 +11,12 @@ const getusers=async ()=>{
 export async function GET(req: NextRequest) {
     try {
 
+        const session1 = await getServerSession(authOptions);
+        if (!session1) {
+            return NextResponse.json({ status: 'error', message: 'Unauthorized' }, { status: 401 });
+        }
         const session = await getusers()
 
-    
 
         const url = new URL(req.url);
         const email = url.searchParams.get('email') || ""

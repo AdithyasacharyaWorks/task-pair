@@ -56,6 +56,11 @@ const formSchema = z.object({
         // Custom refinement to check if the date is greater than or equal to today
         const today = new Date();
         const selectedDate = new Date(value);
+
+        // Set the time to midnight for comparison
+        today.setHours(0, 0, 0, 0);
+        selectedDate.setHours(0, 0, 0, 0);
+
         return selectedDate >= today;
       },
       {
