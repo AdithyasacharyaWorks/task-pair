@@ -1,7 +1,14 @@
 import { NextResponse } from "next/server";
 import Cookies from "js-cookie";
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/route'; 
+
 
 export async function POST() {
+    const session = await getServerSession(authOptions);
+      if (!session) {
+            return NextResponse.json({ status: 'error', message: 'Unauthorized' }, { status: 401 });
+        }
     // Clear the token cookie
     const tokenCookieOptions = { HttpOnly: true, Path: '/', Secure: true, SameSite: 'Strict' };
     Cookies.remove('token', tokenCookieOptions);

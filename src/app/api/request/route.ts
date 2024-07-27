@@ -1,11 +1,28 @@
 import { dbId,collectionId,database,Query } from "@/backend";
 import { NextRequest,NextResponse } from "next/server";
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/route'; 
 export async function GET(req: NextRequest) {
     try {
     
 
         const url = new URL(req.url);
         const email = url.searchParams.get('email') || ""
+        console.log("this is email coming from first page",email)
+
+        const session = await getServerSession(authOptions);
+        if (!session) {
+            console.log("ihdfashdkfjgadf")
+            return NextResponse.json({ status: 'error', message: 'Unauthorized' }, { status: 401 });
+        }
+
+        console.log("session detail",session)
+        console.log("email",email)
+
+        if (session?.user?.email != email) {
+            console.log("8937458734593864")
+            return NextResponse.json({ status: 'error', message: 'Unauthorized' }, { status: 401 });
+        }
     
 
         const res = await database.listDocuments(dbId, collectionId, [

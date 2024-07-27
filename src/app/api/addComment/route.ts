@@ -1,13 +1,24 @@
 import { NextResponse } from "next/server";
-import { database, dbId, collectionId } from "@/backend"; // Import your configured Appwrite instance
+import { database, dbId, collectionId } from "@/backend";
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/route'; 
 
 export async function POST(req: Request) {
   try {
+    const session = await getServerSession(authOptions);
+      if (!session) {
+            return NextResponse.json({ status: 'error', message: 'Unauthorized' }, { status: 401 });
+        }
     const body = await req.json();
     const { taskId, comment } = body;
 
 
     const data = await database.getDocument(dbId,collectionId,taskId)
+
+    if(session?.user?.email !== data?.email || session?.user?.email !==data?.assignedTo){
+      return NextResponse.json({ status: 'notValidUser', message: 'You are Unauthorized to perform this operation' }, { status: 401 });
+    }
+
 
 
     const updatedDocument = await database.updateDocument(dbId, collectionId, taskId, {

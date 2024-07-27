@@ -1,11 +1,16 @@
 
 import { NextResponse } from 'next/server';
 import { database, dbId, userCollectionId, Query } from '@/backend';
-
-
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/route'; 
 
 export async function GET(request: Request) {
     try {
+
+      const session = await getServerSession(authOptions);
+      if (!session) {
+            return NextResponse.json({ status: 'error', message: 'Unauthorized' }, { status: 401 });
+        }
       const url = new URL(request.url);
       const email = url.searchParams.get('email') || '';
   

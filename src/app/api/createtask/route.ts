@@ -1,6 +1,8 @@
 import { dbId, database, collectionId, ID, Query } from "@/backend";
 import { NextResponse } from "next/server";
 import { cookies } from 'next/headers';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/route'; 
 
 type error = {
     message: string;
@@ -10,6 +12,11 @@ export async function POST(request: Request) {
   const id = ID.unique();
   
   try {
+
+    const session = await getServerSession(authOptions);
+      if (!session) {
+            return NextResponse.json({ status: 'error', message: 'Unauthorized' }, { status: 401 });
+        }
     const body = await request.json();
     const url = new URL(request.url);
     const email = url.searchParams.get('email');
