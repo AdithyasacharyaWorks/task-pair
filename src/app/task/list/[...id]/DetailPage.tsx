@@ -525,7 +525,7 @@ const DetailPage = ({ params, userData }: any) => {
             process.env.NODE_ENV === "production"
               ? baseUrl.production
               : baseUrl.development
-          }/api/taskdetail?email=adithyasacharya929@gmail.com&taskId=${
+          }/api/taskdetail?taskId=${
             params.id
           }`
         );
@@ -640,7 +640,7 @@ const DetailPage = ({ params, userData }: any) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center bg-[#0d1117] mt-4 sm:mt-32 p-4 sm:p-8">
+    <div className="flex flex-col items-center justify-center bg-[#0d1117] mt-10  p-4 sm:p-8">
       {loading ? (
         <div className="flex justify-center items-center mt-32">
           <Loader />

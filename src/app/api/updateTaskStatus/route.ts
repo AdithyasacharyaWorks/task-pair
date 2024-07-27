@@ -6,7 +6,7 @@ import { authOptions } from '../auth/[...nextauth]/route';
 export async function POST(req: Request) {
   try {
 
-const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions);
       if (!session) {
             return NextResponse.json({ status: 'error', message: 'Unauthorized' }, { status: 401 });
         }
@@ -14,9 +14,7 @@ const session = await getServerSession(authOptions);
 
     // Fetch the existing document
     const document = await database.getDocument(dbId, collectionId, taskId);
-    console.log(document)
-
-    if(session?.user?.email !== document?.email || session?.user?.email !==document?.assignedTo){
+    if(session?.user?.email !== document?.email && session?.user?.email !==document?.assignedTo){
       return NextResponse.json({ status: 'notValidUser', message: 'You are Unauthorized to perform this operation' }, { status: 401 });
     }
 
