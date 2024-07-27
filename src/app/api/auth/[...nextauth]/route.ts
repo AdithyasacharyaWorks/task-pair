@@ -39,9 +39,9 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async redirect({ url, baseUrl }) {
-      // if (url.startsWith("/")) return `${baseUrl}${url}`;
-      // if (new URL(url).origin === baseUrl) return url;
-      return "http://localhost:3000";
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
     },
   },
   pages: {
